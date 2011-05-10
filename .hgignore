@@ -1,0 +1,6 @@
+# Ignore all editor-backups & pyc files
+syntax: glob
+
+*~
+*.pyc
+
