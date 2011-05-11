@@ -1,10 +1,9 @@
-===============
-Django-monitor
-===============
 
----------------------------------------------------------
-A django-app to enable moderation of model objects
----------------------------------------------------------
+.. _`intro`:
+
+===============
+Introduction
+===============
 
 About
 =====
@@ -26,9 +25,6 @@ be available from among the change-list actions. Users can moderate objects
 using these actions. Auto-moderation and related moderation are supported.
 Also, you can protect approved objects from further editing or deletion.
 
-Read the documentation at ``read_the_docs`` or the ``docs/`` directory inside
-the source path to know more about its usage.
-
 Install
 ========
 
@@ -45,30 +41,6 @@ Place it in your path
 Add to your project
 --------------------
 * Add to your django project by including it in settings.INSTALLED_APPS.
-
-Basic usage (developers)
-========================
-
-* Register the model for moderation using ``monitor.nq``. **Example**:
-
-  ::
-    import monitor
-    # Your model here
-    monitor.nq(YOUR_MODEL)
-
-  The documentation describes all supported arguments and their purposes.
-
-* Inherit the MonitorAdmin instead of ModelAdmin for moderated models.
-  You can make use of ``protected_fields`` also if you want to. See the
-  **example** below:
-
-  ::
-    # in your admin.py
-    from monitor.admin import MonitorAdmin
-    class YourModelAdmin(MonitorAdmin):
-        # Use protected_fields if you want to prevent user from changing some
-        #  field values of an approved object. Ignore if not.
-        protected_fields = ['field1',]
 
 Features
 =========

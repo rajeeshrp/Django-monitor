@@ -1,0 +1,225 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; Django-monitor v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django-monitor v0.1 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">Django-monitor v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<span id="intro"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>Moderation seems to be some job each one want to do in their own way.
+Django-monitor is yet another django-app to help moderate model objects.
+Other popular apps are Sunlight lab&#8217;s <cite>django-gatekeeper</cite> and Dominno&#8217;s
+<cite>django-moderation</cite>. Our app is almost a clone of the <cite>django-gatekeeper</cite>
+project but with some different features. The name <tt class="docutils literal"><span class="pre">monitor</span></tt> is just to
+distinguish it from <cite>django-moderation</cite>. The terms, <tt class="docutils literal"><span class="pre">monitor</span></tt> and
+<tt class="docutils literal"><span class="pre">moderate</span></tt> are used with same meaning everywhere in the source code.</p>
+<p>Here, any object created for a moderated model will have a moderation status
+of  <tt class="docutils literal"><span class="pre">In</span> <span class="pre">Pending</span></tt>, <tt class="docutils literal"><span class="pre">Challenged</span></tt> or <tt class="docutils literal"><span class="pre">Approved</span></tt>. Each model has its own
+<tt class="docutils literal"><span class="pre">moderate_</span></tt> permission and only those users with corresponding permission
+can moderate objects of that model. For any moderated model, three actions,
+<tt class="docutils literal"><span class="pre">approve_selected</span></tt>, <tt class="docutils literal"><span class="pre">challenge_selected</span></tt> and <tt class="docutils literal"><span class="pre">reset_to_pending</span></tt>, will
+be available from among the change-list actions. Users can moderate objects
+using these actions. Auto-moderation and related moderation are supported.
+Also, you can protect approved objects from further editing or deletion.</p>
+</div>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="grab-the-source">
+<h3>Grab the Source<a class="headerlink" href="#grab-the-source" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Download the latest version from bitbucket repo:
+<a class="reference external" href="http://bitbucket.org/rajeesh/django-monitor">http://bitbucket.org/rajeesh/django-monitor</a>.</li>
+<li>Will be uploaded to pypi soon.</li>
+</ul>
+</div>
+<div class="section" id="place-it-in-your-path">
+<h3>Place it in your path<a class="headerlink" href="#place-it-in-your-path" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Copy the <tt class="docutils literal"><span class="pre">monitor</span></tt> directory to some place in your python path.</li>
+</ul>
+</div>
+<div class="section" id="add-to-your-project">
+<h3>Add to your project<a class="headerlink" href="#add-to-your-project" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Add to your django project by including it in settings.INSTALLED_APPS.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="permission">
+<h3>Permission<a class="headerlink" href="#permission" title="Permalink to this headline">¶</a></h3>
+<p>During database syncing, a basic permission, <tt class="docutils literal"><span class="pre">moderate_&lt;model_name&gt;</span></tt> will
+be created for each model registered for moderation, where <cite>&lt;model_name&gt;</cite> is
+replaced with the name of the corresponding model. eg, If you register your
+<cite>Book</cite> model with monitor, there will be a permission, <tt class="docutils literal"><span class="pre">moderate_book</span></tt>.
+Only those users with that permission will be able to approve or challenge
+any object created for that model.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The users who have add/edit permissions will be called non-managers and
+those who have moderate permission also (in addition to add/edit) will
+be called managers from now onwards.</p>
+</div>
+</div>
+<div class="section" id="auto-moderation">
+<h3>Auto-moderation<a class="headerlink" href="#auto-moderation" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>When a non-manager creates an object that belongs to a moderated model,
+it will have a pending status. (status = <tt class="docutils literal"><span class="pre">In</span> <span class="pre">Pending</span></tt>). Each of these
+objects can later be approved or challenged by a manager.</li>
+<li>When a manager creates an object that belongs to a moderated model,
+it will get approved automatically (status = <tt class="docutils literal"><span class="pre">Approved</span></tt>).</li>
+</ol>
+</div>
+<div class="section" id="moderation-actions">
+<h3>Moderation actions<a class="headerlink" href="#moderation-actions" title="Permalink to this headline">¶</a></h3>
+<p>Change-list of each moderated model contains three actions, <tt class="docutils literal"><span class="pre">approve</span></tt>,
+<tt class="docutils literal"><span class="pre">challenge</span></tt> and <tt class="docutils literal"><span class="pre">reset</span> <span class="pre">to</span> <span class="pre">pending</span></tt>. If the manager selects few objects,
+choose the action <tt class="docutils literal"><span class="pre">approve</span></tt> and press <tt class="docutils literal"><span class="pre">Go</span></tt>, those objects will get
+approved. Similarly, one can challenge some objects too. Once some objects
+get challenged, the non-managers with edit permissions may check them
+again and make required corrections. After that, they can reset the status to
+<tt class="docutils literal"><span class="pre">In</span> <span class="pre">pending</span></tt> so that their manager gets to verify them again.</p>
+</div>
+<div class="section" id="related-moderation">
+<h3>Related moderation<a class="headerlink" href="#related-moderation" title="Permalink to this headline">¶</a></h3>
+<p>When a manager moderates some model objects, there may be some other related
+model objects which also can get moderated along with the original ones. The
+developer can specify such related models to be moderated during registration.</p>
+</div>
+<div class="section" id="edit-lock">
+<h3>Edit-Lock<a class="headerlink" href="#edit-lock" title="Permalink to this headline">¶</a></h3>
+<p>The developer can protect the approved objects from further modification to
+maintain data integrity. The fields which are not meant to be changed after
+approval can be specified in the model-admin using <tt class="docutils literal"><span class="pre">protected_fields</span></tt> option.
+The model-admin will club them with readonly_fields if the object is approved.</p>
+</div>
+</div>
+<div class="section" id="todo">
+<h2>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">There should be a facility to lock deletion of approved objects too.</p>
+</li>
+<li><p class="first">When a manager logs into the admin-site, he should be able to see two links,
+<tt class="docutils literal"><span class="pre">n</span> <span class="pre">Pending</span></tt> and <tt class="docutils literal"><span class="pre">n</span> <span class="pre">Challenged</span></tt>, in the rows of all moderated models</p>
+<blockquote>
+<div><p>with objects in the respective status. <tt class="docutils literal"><span class="pre">n</span></tt> is the number of objects to
+be moderated. On clicking the link, manager should be able to see the
+change-list of all such objects.</p>
+</div></blockquote>
+</li>
+<li><p class="first">The change-list should include a column, <cite>status</cite> for moderated models to
+display their current moderation status.</p>
+</li>
+<li><p class="first">The change-list filter should support status based filtering too for
+moderated models.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#about">About</a></li>
+<li><a class="reference internal" href="#install">Install</a><ul>
+<li><a class="reference internal" href="#grab-the-source">Grab the Source</a></li>
+<li><a class="reference internal" href="#place-it-in-your-path">Place it in your path</a></li>
+<li><a class="reference internal" href="#add-to-your-project">Add to your project</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#features">Features</a><ul>
+<li><a class="reference internal" href="#permission">Permission</a></li>
+<li><a class="reference internal" href="#auto-moderation">Auto-moderation</a></li>
+<li><a class="reference internal" href="#moderation-actions">Moderation actions</a></li>
+<li><a class="reference internal" href="#related-moderation">Related moderation</a></li>
+<li><a class="reference internal" href="#edit-lock">Edit-Lock</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#todo">TODO</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/intro.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">Django-monitor v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Rajeesh Nair.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
