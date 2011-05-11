@@ -26,8 +26,9 @@ be available from among the change-list actions. Users can moderate objects
 using these actions. Auto-moderation and related moderation are supported.
 Also, you can protect approved objects from further editing or deletion.
 
-Read the documentation at ``read_the_docs`` or the ``docs/`` directory inside
-the source path to know more about its usage.
+Read the documentation at the ``docs/`` directory inside the source path to
+know more about its usage. Will soon be available at http://readthedocs.org
+also.
 
 Install
 ========
@@ -49,9 +50,10 @@ Add to your project
 Basic usage (developers)
 ========================
 
-* Register the model for moderation using ``monitor.nq``. **Example**:
+* Register the model for moderation using ``monitor.nq``.
 
-  ::
+**Example**: ::
+
     import monitor
     # Your model here
     monitor.nq(YOUR_MODEL)
@@ -60,9 +62,8 @@ Basic usage (developers)
 
 * Inherit the MonitorAdmin instead of ModelAdmin for moderated models.
   You can make use of ``protected_fields`` also if you want to. See the
-  **example** below:
+  **example** below: ::
 
-  ::
     # in your admin.py
     from monitor.admin import MonitorAdmin
     class YourModelAdmin(MonitorAdmin):
@@ -122,13 +123,14 @@ The model-admin will club them with readonly_fields if the object is approved.
 
 TODO
 ======
+
 * There should be a facility to lock deletion of approved objects too.
 
 * When a manager logs into the admin-site, he should be able to see two links,
   ``n Pending`` and ``n Challenged``, in the rows of all moderated models
-   with objects in the respective status. ``n`` is the number of objects to
-   be moderated. On clicking the link, manager should be able to see the
-   change-list of all such objects.
+  with objects in the respective status. ``n`` is the number of objects to
+  be moderated. On clicking the link, manager should be able to see the
+  change-list of all such objects.
 
 * The change-list should include a column, `status` for moderated models to
   display their current moderation status.
