@@ -133,14 +133,34 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
     def _get_monitor_entry(self):
         """ accessor for monitor_entry that caches the object """
         if not hasattr(self, '_monitor_entry'):
-            self._monitor_entry = Monitor.objects.get(pk = self._monitor_id)
+            self._monitor_entry = MonitorEntry.objects.get(pk = self._monitor_id)
         return self._monitor_entry
+
+    def _get_status_display(self):
+        """ to display the moderation status in verbose """
+        return {
+            'IP': 'In Pending', 
+            'CH': 'Challenged',
+            'AP': 'Approved'
+        }[self._status]
+    _get_status_display.short_description = status_name
 
     # Add custom manager & monitor_entry to class
     manager = CustomManager()
     cls.add_to_class(manager_name, manager)
     cls.add_to_class(monitor_name, property(_get_monitor_entry))
     cls.add_to_class(status_name, property(lambda self: self._status))
+    cls.add_to_class(
+        'get_status_display', _get_status_display
+    )
+    # We have a custom filter defined in monitor.filter to enable
+    # filtering of model objects by their moderation status.
+    # But `status` is not a real field and Django does not support filters
+    # on non-fields as of now. Our way out is to attach the filter to some
+    # other field which the developer may never include in list_filter.
+    # I think, prmary key is the best option.
+    # (Latest Django dev-version has undergone changes to allow non-fields.)
+    cls._meta.get_field(cls._meta.pk.attname).monitor_filter = True
 
     # Copy manager to default_class
     cls._default_manager = manager

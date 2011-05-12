@@ -22,7 +22,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Django-monitor v0.1 documentation" href="index.html" /> 
+    <link rel="top" title="Django-monitor v0.1 documentation" href="index.html" />
+    <link rel="next" title="How to use" href="usage.html" />
+    <link rel="prev" title="Welcome to django-monitor’s documentation!" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -31,6 +33,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="usage.html" title="How to use"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to django-monitor’s documentation!"
+             accesskey="P">previous</a> |</li>
         <li><a href="index.html">Django-monitor v0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,19 +54,12 @@
 <h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
 <p>Moderation seems to be some job each one want to do in their own way.
 Django-monitor is yet another django-app to help moderate model objects.
-Other popular apps are Sunlight lab&#8217;s <cite>django-gatekeeper</cite> and Dominno&#8217;s
-<cite>django-moderation</cite>. Our app is almost a clone of the <cite>django-gatekeeper</cite>
-project but with some different features. The name <tt class="docutils literal"><span class="pre">monitor</span></tt> is just to
-distinguish it from <cite>django-moderation</cite>. The terms, <tt class="docutils literal"><span class="pre">monitor</span></tt> and
-<tt class="docutils literal"><span class="pre">moderate</span></tt> are used with same meaning everywhere in the source code.</p>
-<p>Here, any object created for a moderated model will have a moderation status
-of  <tt class="docutils literal"><span class="pre">In</span> <span class="pre">Pending</span></tt>, <tt class="docutils literal"><span class="pre">Challenged</span></tt> or <tt class="docutils literal"><span class="pre">Approved</span></tt>. Each model has its own
-<tt class="docutils literal"><span class="pre">moderate_</span></tt> permission and only those users with corresponding permission
-can moderate objects of that model. For any moderated model, three actions,
-<tt class="docutils literal"><span class="pre">approve_selected</span></tt>, <tt class="docutils literal"><span class="pre">challenge_selected</span></tt> and <tt class="docutils literal"><span class="pre">reset_to_pending</span></tt>, will
-be available from among the change-list actions. Users can moderate objects
-using these actions. Auto-moderation and related moderation are supported.
-Also, you can protect approved objects from further editing or deletion.</p>
+It was started by cloning the project <cite>django-gatekeeper</cite> but offers
+different set of features. The name <tt class="docutils literal"><span class="pre">monitor</span></tt> is just to distinguish it
+from the existing app, <cite>django-moderation</cite>. (The terms, <tt class="docutils literal"><span class="pre">monitor</span></tt> and
+<tt class="docutils literal"><span class="pre">moderate</span></tt> are used with same meaning everywhere in the source code.)</p>
+<p>Here, the moderation process is well integrated with django-admin. That is,
+all moderation actvities are performed from within the changelist page itself.</p>
 </div>
 <div class="section" id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
@@ -67,7 +68,6 @@ Also, you can protect approved objects from further editing or deletion.</p>
 <ul class="simple">
 <li>Download the latest version from bitbucket repo:
 <a class="reference external" href="http://bitbucket.org/rajeesh/django-monitor">http://bitbucket.org/rajeesh/django-monitor</a>.</li>
-<li>Will be uploaded to pypi soon.</li>
 </ul>
 </div>
 <div class="section" id="place-it-in-your-path">
@@ -85,40 +85,26 @@ Also, you can protect approved objects from further editing or deletion.</p>
 </div>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="permission">
-<h3>Permission<a class="headerlink" href="#permission" title="Permalink to this headline">¶</a></h3>
-<p>During database syncing, a basic permission, <tt class="docutils literal"><span class="pre">moderate_&lt;model_name&gt;</span></tt> will
-be created for each model registered for moderation, where <cite>&lt;model_name&gt;</cite> is
-replaced with the name of the corresponding model. eg, If you register your
-<cite>Book</cite> model with monitor, there will be a permission, <tt class="docutils literal"><span class="pre">moderate_book</span></tt>.
-Only those users with that permission will be able to approve or challenge
-any object created for that model.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The users who have add/edit permissions will be called non-managers and
-those who have moderate permission also (in addition to add/edit) will
-be called managers from now onwards.</p>
-</div>
+<div class="section" id="model-specific-permission">
+<h3>Model-specific permission<a class="headerlink" href="#model-specific-permission" title="Permalink to this headline">¶</a></h3>
+<p>Each moderated model will have an associated moderate permission of the form,
+<tt class="docutils literal"><span class="pre">moderate_&lt;model_name&gt;</span></tt> where <cite>&lt;model_name&gt;</cite> represents the name of the
+model. Only those users with that permission will be able to approve or
+challenge any object created for that model.</p>
 </div>
 <div class="section" id="auto-moderation">
 <h3>Auto-moderation<a class="headerlink" href="#auto-moderation" title="Permalink to this headline">¶</a></h3>
-<ol class="arabic simple">
-<li>When a non-manager creates an object that belongs to a moderated model,
-it will have a pending status. (status = <tt class="docutils literal"><span class="pre">In</span> <span class="pre">Pending</span></tt>). Each of these
-objects can later be approved or challenged by a manager.</li>
-<li>When a manager creates an object that belongs to a moderated model,
-it will get approved automatically (status = <tt class="docutils literal"><span class="pre">Approved</span></tt>).</li>
-</ol>
+<p>Any object created by a user with add permission will have an <tt class="docutils literal"><span class="pre">In</span> <span class="pre">Pending</span></tt>
+status. If the user has got moderate permission also, the object created will
+automatically get approved (status is <tt class="docutils literal"><span class="pre">Approved</span></tt>).</p>
 </div>
-<div class="section" id="moderation-actions">
-<h3>Moderation actions<a class="headerlink" href="#moderation-actions" title="Permalink to this headline">¶</a></h3>
-<p>Change-list of each moderated model contains three actions, <tt class="docutils literal"><span class="pre">approve</span></tt>,
-<tt class="docutils literal"><span class="pre">challenge</span></tt> and <tt class="docutils literal"><span class="pre">reset</span> <span class="pre">to</span> <span class="pre">pending</span></tt>. If the manager selects few objects,
-choose the action <tt class="docutils literal"><span class="pre">approve</span></tt> and press <tt class="docutils literal"><span class="pre">Go</span></tt>, those objects will get
-approved. Similarly, one can challenge some objects too. Once some objects
-get challenged, the non-managers with edit permissions may check them
-again and make required corrections. After that, they can reset the status to
-<tt class="docutils literal"><span class="pre">In</span> <span class="pre">pending</span></tt> so that their manager gets to verify them again.</p>
+<div class="section" id="moderation-from-within-admin-changelist">
+<h3>Moderation from within admin changelist<a class="headerlink" href="#moderation-from-within-admin-changelist" title="Permalink to this headline">¶</a></h3>
+<p>The changelist view displays an additional column showing current moderation
+status of each object. Also, you can filter the changelist entries by their
+moderation status. Three actions, <tt class="docutils literal"><span class="pre">approve</span></tt>, <tt class="docutils literal"><span class="pre">challenge</span></tt> and
+<tt class="docutils literal"><span class="pre">reset</span> <span class="pre">to</span> <span class="pre">pending</span></tt> are provided for moderation. The user just need to select
+the objects, choose appropriate action and press <tt class="docutils literal"><span class="pre">Go</span></tt> to moderate.</p>
 </div>
 <div class="section" id="related-moderation">
 <h3>Related moderation<a class="headerlink" href="#related-moderation" title="Permalink to this headline">¶</a></h3>
@@ -136,23 +122,11 @@ The model-admin will club them with readonly_fields if the object is approved.</
 </div>
 <div class="section" id="todo">
 <h2>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
-<ul>
-<li><p class="first">There should be a facility to lock deletion of approved objects too.</p>
-</li>
-<li><p class="first">When a manager logs into the admin-site, he should be able to see two links,
-<tt class="docutils literal"><span class="pre">n</span> <span class="pre">Pending</span></tt> and <tt class="docutils literal"><span class="pre">n</span> <span class="pre">Challenged</span></tt>, in the rows of all moderated models</p>
-<blockquote>
-<div><p>with objects in the respective status. <tt class="docutils literal"><span class="pre">n</span></tt> is the number of objects to
-be moderated. On clicking the link, manager should be able to see the
-change-list of all such objects.</p>
-</div></blockquote>
-</li>
-<li><p class="first">The change-list should include a column, <cite>status</cite> for moderated models to
-display their current moderation status.</p>
-</li>
-<li><p class="first">The change-list filter should support status based filtering too for
-moderated models.</p>
-</li>
+<ul class="simple">
+<li>There should be a facility to lock deletion of approved objects too.</li>
+<li>There should be a notification area to show counts of pending as well as
+challenged objects for each moderated model. So user need not routinely check
+every changelist just to know if there exists entries to be moderated.</li>
 </ul>
 </div>
 </div>
@@ -174,9 +148,9 @@ moderated models.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#features">Features</a><ul>
-<li><a class="reference internal" href="#permission">Permission</a></li>
+<li><a class="reference internal" href="#model-specific-permission">Model-specific permission</a></li>
 <li><a class="reference internal" href="#auto-moderation">Auto-moderation</a></li>
-<li><a class="reference internal" href="#moderation-actions">Moderation actions</a></li>
+<li><a class="reference internal" href="#moderation-from-within-admin-changelist">Moderation from within admin changelist</a></li>
 <li><a class="reference internal" href="#related-moderation">Related moderation</a></li>
 <li><a class="reference internal" href="#edit-lock">Edit-Lock</a></li>
 </ul>
@@ -186,6 +160,12 @@ moderated models.</p>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to django-monitor&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="usage.html"
+                        title="next chapter">How to use</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/intro.txt"
@@ -214,6 +194,12 @@ moderated models.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="usage.html" title="How to use"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to django-monitor’s documentation!"
+             >previous</a> |</li>
         <li><a href="index.html">Django-monitor v0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>

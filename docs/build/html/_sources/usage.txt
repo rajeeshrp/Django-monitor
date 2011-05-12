@@ -92,6 +92,12 @@ those users with required permission can moderate any object of a particular
 model. The superuser or one with enough permissions must assign those
 permissions to the appropriate users.
 
+Filter by moderation status
+----------------------------
+The changelist view of all moderated models now contain an option to filter
+objects by their moderation status. In the filter-box provided in changelist
+page, you can see this option with the title, ``Moderation status``.
+
 Moderation by Actions
 -----------------------
 Moderation is performed through change-list actions,  ``approve``, ``challenge``
