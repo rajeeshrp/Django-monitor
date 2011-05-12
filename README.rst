@@ -19,8 +19,8 @@ are used with same meaning everywhere.)
 Here, the moderation process is well integrated with django-admin. That is, all
 moderation actvities are performed from within the changelist page itself.
 
-Read the documentation at the ``docs/`` directory inside the source path to
-know more about its usage.
+Read the detailed documentation from http://readthedocs.org/docs/django-monitor/en/latest/
+or at the ``docs/`` directory inside the source path to know more about its usage.
 
 Install
 ========
