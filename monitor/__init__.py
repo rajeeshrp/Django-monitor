@@ -10,6 +10,7 @@ from django.db.models import Manager, signals
 
 from monitor.middleware import get_current_user
 from monitor.models import MonitorEntry
+from monitor.util import moderate_rel_objects
 
 _queue = {}
 
@@ -183,11 +184,14 @@ def save_handler(sender, instance, **kwargs):
     else:
         status = PENDING_STATUS
 
-    # Corresponding monitor entry
+    # Create corresponding monitor entry
     if kwargs.get('created', None):
         me = MonitorEntry(
             status = status, content_object = instance,
             timestamp = datetime.now()
         )
         me.save()
+
+    # Moderate related objects too...
+    moderate_rel_objects(instance, status, user)
 

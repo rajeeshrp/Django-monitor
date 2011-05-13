@@ -65,7 +65,7 @@ class MonitorEntry(models.Model):
     def moderate(self, status, user, notes = ''):
         """
         Why a separate public method?
-        To use when you're not sure about the status used
+        To use when you're not sure about the status given
         """
         self._moderate(status, user, notes)
 
