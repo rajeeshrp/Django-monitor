@@ -5,8 +5,9 @@ from django.test import TestCase
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from monitor.tests.utils.testsettingsmanager import SettingsTestCase
+from monitor.conf import PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS
 
+from monitor.tests.utils.testsettingsmanager import SettingsTestCase
 from monitor.tests.apps.testapp.models import Author, Book, Supplement, Publisher
 
 def get_perm(Model, perm):
@@ -114,8 +115,8 @@ class ModTest(SettingsTestCase):
         self.assertEquals(response.status_code, 200)
         # 2 Author instances added. Both are in pending (IP)
         self.assertEquals(Author.objects.count(), 2)
-        self.assertEquals(Author.objects.get(pk=1).status, 'IP')
-        self.assertEquals(Author.objects.get(pk=2).status, 'IP')
+        self.assertEquals(Author.objects.get(pk=1).status, PENDING_STATUS)
+        self.assertEquals(Author.objects.get(pk=2).status, PENDING_STATUS)
         # Adding 1 book instance...
         url = '/admin/testapp/book/add/'
         data = {
@@ -126,7 +127,7 @@ class ModTest(SettingsTestCase):
         self.assertEquals(response.status_code, 200)
         # 1 Book instance added. In pending (IP)
         self.assertEquals(Book.objects.count(), 1)
-        self.assertEquals(Book.objects.get(pk=1).status, 'IP')
+        self.assertEquals(Book.objects.get(pk=1).status, PENDING_STATUS)
         # Adding 2 Supplement instances
         url = '/admin/testapp/supplement/add/'
         data = {'serial_num': 1, 'book': 1}
@@ -135,8 +136,8 @@ class ModTest(SettingsTestCase):
         response = self.client.post(url, data, follow = True)
         # 2 Supplement instances added. In Pending (IP)
         self.assertEquals(Supplement.objects.count(), 2)
-        self.assertEquals(Supplement.objects.get(pk=1).status, 'IP')
-        self.assertEquals(Supplement.objects.get(pk=2).status, 'IP')
+        self.assertEquals(Supplement.objects.get(pk=1).status, PENDING_STATUS)
+        self.assertEquals(Supplement.objects.get(pk=2).status, PENDING_STATUS)
 
         # Adder logs out
         self.client.logout()
@@ -156,18 +157,18 @@ class ModTest(SettingsTestCase):
         url = '/admin/testapp/author/'
         data = {'action': 'approve_selected', 'index': 0, '_selected_action': 1}
         response = self.client.post(url, data, follow = True)
-        self.assertEquals(Author.objects.get(pk=1).status, 'AP')
+        self.assertEquals(Author.objects.get(pk=1).status, APPROVED_STATUS)
         # Challenge Author 2 (created by adder)
         data = {'action': 'challenge_selected', 'index': 0, '_selected_action': 2}
         response = self.client.post(url, data, follow = True)
-        self.assertEquals(Author.objects.get(pk=2).status, 'CH')
+        self.assertEquals(Author.objects.get(pk=2).status, CHALLENGED_STATUS)
         # Approve Book 1 (created by adder). Supplements also get approved.
         url = '/admin/testapp/book/'
         data = {'action': 'approve_selected', 'index': 0, '_selected_action': 1}
         response = self.client.post(url, data, follow = True)
-        self.assertEquals(Book.objects.get(pk=1).status, 'AP')
-        self.assertEquals(Supplement.objects.get(pk=1).status, 'AP')
-        self.assertEquals(Supplement.objects.get(pk=2).status, 'AP')
+        self.assertEquals(Book.objects.get(pk=1).status, APPROVED_STATUS)
+        self.assertEquals(Supplement.objects.get(pk=1).status, APPROVED_STATUS)
+        self.assertEquals(Supplement.objects.get(pk=2).status, APPROVED_STATUS)
 
         # moderator logs out
         self.client.logout()
@@ -186,5 +187,5 @@ class ModTest(SettingsTestCase):
         url = '/admin/testapp/author/'
         data = {'action': 'reset_to_pending', 'index': 0, '_selected_action': 2}
         response = self.client.post(url, data, follow = True)
-        self.failUnlessEqual(Author.objects.get(pk=2).status, 'IP')
+        self.failUnlessEqual(Author.objects.get(pk=2).status, PENDING_STATUS)
 

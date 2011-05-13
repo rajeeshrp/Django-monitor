@@ -4,11 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 import datetime
 
-STATUS_CHOICES = [
-    ('IP', "In Pending"),
-    ('AP', "Approved"),
-    ('CH', "Challenged")
-]
+from monitor.conf import STATUS_DICT
+STATUS_CHOICES = STATUS_DICT.items()
 
 class MonitorEntryManager(models.Manager):
     """ Custom Manager for MonitorEntry"""
@@ -68,4 +65,6 @@ class MonitorEntry(models.Model):
         To use when you're not sure about the status given
         """
         self._moderate(status, user, notes)
+
+MONITOR_TABLE = MonitorEntry._meta.db_table
 

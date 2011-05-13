@@ -1,6 +1,7 @@
 from django.contrib.admin.filterspecs import ChoicesFilterSpec
 from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
+from monitor.conf import STATUS_DICT
 
 class MonitorFilter(ChoicesFilterSpec):
     """
@@ -15,7 +16,7 @@ class MonitorFilter(ChoicesFilterSpec):
         )
         self.lookup_kwarg = 'status'
         self.lookup_val = request.GET.get(self.lookup_kwarg)
-        self.lookup_choices = ['IP', 'AP', 'CH']
+        self.lookup_choices = STATUS_DICT.keys()
         
     def choices(self, cl):
         yield {
@@ -27,11 +28,7 @@ class MonitorFilter(ChoicesFilterSpec):
             yield {
                 'selected': smart_unicode(val) == self.lookup_val,
                 'query_string': cl.get_query_string({self.lookup_kwarg: val}),
-                'display': {
-                    'IP': "In Pending",
-                    'CH': "Challenged",
-                    'AP': "Approved"
-                }[val]
+                'display': STATUS_DICT[val]
             }
 
     def title(self):

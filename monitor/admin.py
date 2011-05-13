@@ -6,7 +6,10 @@ from monitor.actions import (
     approve_selected, challenge_selected, reset_to_pending
 )
 from monitor.filter import MonitorFilter
-from monitor import APPROVED_STATUS
+from monitor import model_from_queue
+from monitor.conf import (
+    PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS
+)
 
 # Our objective is to place the custom monitor-filter on top
 FilterSpec.filter_specs.insert(
@@ -30,7 +33,7 @@ class MonitorAdmin(admin.ModelAdmin):
         Django does not allow using non-fields in list_filter. (As of 1.3).
         Using params not mentioned in list_filter will raise error in changelist.
         We want to enable status based filtering (status is not a db_field).
-        We will check the request.get here and if there's a `status` in it,
+        We will check the request.GET here and if there's a `status` in it,
         Remove that and filter the qs by status.
         """
         qs = super(MonitorAdmin, self).queryset(request)
@@ -43,18 +46,17 @@ class MonitorAdmin(admin.ModelAdmin):
             del get_dict['status']
             request.GET = get_dict
         # ChangeList will use this custom queryset. So we've done it!
-        if status and status == 'IP':
+        if status and status == PENDING_STATUS:
             qs = qs.pending()
-        elif status and status == 'CH':
+        elif status and status == CHALLENGED_STATUS:
             qs = qs.challenged()
-        elif status and status == 'AP':
+        elif status and status == APPROVED_STATUS:
             qs = qs.approved()
         return qs
 
     def is_monitored(self):
         """Returns whether the underlying model is monitored or not."""
-        from monitor import is_in_queue
-        return is_in_queue(self.model)
+        return bool(model_from_queue(self.model))
 
     def get_readonly_fields(self, request, obj = None):
         """ Overridden to include protected_fields as well."""

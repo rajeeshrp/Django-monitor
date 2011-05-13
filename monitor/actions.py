@@ -4,7 +4,10 @@ from django.contrib.admin.util import model_ngettext
 from django.utils.translation import ugettext_lazy, ugettext as _
 
 from monitor.util import moderate_rel_objects
-from monitor import is_in_queue
+from monitor import model_from_queue
+from monitor.conf import (
+    STATUS_DICT, PENDING_STATUS, APPROVED_STATUS, CHALLENGED_STATUS
+)
 from monitor.models import MonitorEntry
 
 def moderate_selected(modeladmin, request, queryset, status):
@@ -14,15 +17,19 @@ def moderate_selected(modeladmin, request, queryset, status):
     opts = modeladmin.model._meta
     
     # If moderation is disabled..
-    if not is_in_queue(modeladmin.model):
+    if not model_from_queue(modeladmin.model):
         return 0
 
-    # Check that the user has required permission for the actual model
+    # Check that the user has required permission for the actual model.
     # To reset to pending status, change_perm is enough. For all else,
     # user need to have moderate_perm.
     if (
-        (status == 'IP' and not modeladmin.has_change_permission(request)) or 
-        (status != 'IP' and not modeladmin.has_moderate_permission(request))
+        (status == PENDING_STATUS and
+            not modeladmin.has_change_permission(request)
+        ) or 
+        (status != PENDING_STATUS and
+            not modeladmin.has_moderate_permission(request)
+        )
     ):
         raise PermissionDenied
 
@@ -33,11 +40,7 @@ def moderate_selected(modeladmin, request, queryset, status):
     q_count = queryset.count()
 
     # We want to use the status display rather than abbreviations in logs.
-    status_display = {
-        'IP': 'Pending', 
-        'CH': 'Challenged',
-        'AP': 'Approved'
-    }[status]
+    status_display = STATUS_DICT[status]
 
     if q_count:
         #for obj in queryset:
@@ -51,7 +54,7 @@ def moderate_selected(modeladmin, request, queryset, status):
         
 def approve_selected(modeladmin, request, queryset):
     """ Default action to approve selected objects """
-    ap_count = moderate_selected(modeladmin, request, queryset, 'AP')
+    ap_count = moderate_selected(modeladmin, request, queryset, APPROVED_STATUS)
     if ap_count:
         modeladmin.message_user(
             request,
@@ -68,7 +71,7 @@ approve_selected.short_description = ugettext_lazy(
 
 def challenge_selected(modeladmin, request, queryset):
     """ Default action to challenge selected objects """
-    ch_count = moderate_selected(modeladmin, request, queryset, 'CH')
+    ch_count = moderate_selected(modeladmin, request, queryset, CHALLENGED_STATUS)
     if ch_count:
         modeladmin.message_user(
             request,
@@ -85,7 +88,7 @@ challenge_selected.short_description = ugettext_lazy(
 
 def reset_to_pending(modeladmin, request, queryset):
     """ Default action to reset selected object's status to pending """
-    ip_count = moderate_selected(modeladmin, request, queryset, 'IP')
+    ip_count = moderate_selected(modeladmin, request, queryset, PENDING_STATUS)
     if ip_count:
         modeladmin.message_user(
             request,
