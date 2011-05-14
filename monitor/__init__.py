@@ -17,6 +17,11 @@ def queued_models():
     """ Return the models enqueued for moderation"""
     return _queue.keys()
 
+def get_monitor_entry(obj):
+    """ Returns the monitor_entry for the given object."""
+    model_dict = model_from_queue(obj.__class__)
+    return getattr(obj, model_dict['monitor_name']) if model_dict else None
+
 def nq(
     model, rel_fields = [], manager_name = 'objects',
     status_name = 'status', monitor_name = 'monitor_entry', base_manager = None

@@ -4,7 +4,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 import datetime
 
-from monitor.conf import STATUS_DICT
+from monitor.conf import (
+    STATUS_DICT, PENDING_STATUS, APPROVED_STATUS, CHALLENGED_STATUS
+)
 STATUS_CHOICES = STATUS_DICT.items()
 
 class MonitorEntryManager(models.Manager):
@@ -44,27 +46,41 @@ class MonitorEntry(models.Model):
         if hasattr(self.content_object, "get_absolute_url"):
             return self.content_object.get_absolute_url()
 
-    def _moderate(self, status, user, notes = None):
+    def _moderate(self, status, user, notes = ''):
         self.status = status
         self.status_by = user
         self.status_date = datetime.datetime.now()
         self.notes = notes
         self.save()
 
-    def approve(self, user, notes = ''):
+    def approve(self, user = None, notes = ''):
         """ Approve the object"""
-        self._moderate('AP', user, notes)
+        self._moderate(APPROVED_STATUS, user, notes)
 
-    def challenge(self, user, notes = ''):
+    def challenge(self, user = None, notes = ''):
         """ Challenge the object """
-        self._moderate('CH', user, notes)
+        self._moderate(CHALLENGED_STATUS, user, notes)
 
-    def moderate(self, status, user, notes = ''):
+    def reset_to_pending(self, user = None, notes = ''):
+        """ Reset status from Challenged to pending"""
+        self._moderate(PENDING_STATUS, user, notes)
+
+    def moderate(self, status, user = None, notes = ''):
         """
         Why a separate public method?
         To use when you're not sure about the status given
         """
-        self._moderate(status, user, notes)
+        if status in STATUS_DICT.keys():
+            self._moderate(status, user, notes)
+
+    def is_approved(self):
+        return self.status == APPROVED_STATUS
+
+    def is_pending(self):
+        return self.status == PENDING_STATUS
+
+    def is_challenged(self):
+        return self.status == CHALLENGED_STATUS
 
 MONITOR_TABLE = MonitorEntry._meta.db_table
 

@@ -102,7 +102,7 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
     def _get_monitor_entry(self):
         """ accessor for monitor_entry that caches the object """
         if not hasattr(self, '_monitor_entry'):
-            self._monitor_entry = MonitorEntry.objects.get(pk = self._monitor_id)
+            self._monitor_entry = MonitorEntry.objects.get_for_instance(self)
         return self._monitor_entry
 
     def _get_status_display(self):
@@ -150,14 +150,17 @@ def save_handler(sender, instance, **kwargs):
 
     # Create corresponding monitor entry
     if kwargs.get('created', None):
-        me = MonitorEntry(
+        MonitorEntry.objects.create(
             status = status, content_object = instance,
             timestamp = datetime.now()
         )
-        me.save()
 
-    # Moderate related objects too...
-    moderate_rel_objects(instance, status, user)
+        # Moderate related objects too... 
+        from monitor import model_from_queue
+        model = model_from_queue(instance.__class__)
+        if model:
+            for rel_name in model['rel_fields']:
+                moderate_rel_objects(getattr(instance, rel_name), status, user)
 
 def moderate_rel_objects(given, status, user = None):
     """

@@ -12,7 +12,8 @@ Contents:
    :maxdepth: 2
 
    intro
-   usage
+   dev_howto
+   admin_howto
 
 Indices and tables
 ==================
