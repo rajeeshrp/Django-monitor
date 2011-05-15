@@ -3,6 +3,7 @@ __version__ = "0.1.0a"
 __copyright__ = "Copyright (c) 2011 Rajeesh"
 __license__ = "BSD"
 
+from django.dispatch import Signal
 from django.db.models import signals
 
 from monitor.util import create_moderate_perms, add_fields, save_handler
@@ -36,6 +37,8 @@ def nq(
             'status_name': status_name,
             'monitor_name': monitor_name
         }
+
+post_moderation = Signal(providing_args = ["instance"])
 
 signals.post_syncdb.connect(
     create_moderate_perms,

@@ -181,6 +181,29 @@ methods with monitor_entry:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="post-moderation-hook">
+<h2>Post-moderation hook<a class="headerlink" href="#post-moderation-hook" title="Permalink to this headline">¶</a></h2>
+<p>If you want to perform something after an object is moderated, you can make use
+of the <tt class="docutils literal"><span class="pre">post_moderation</span></tt> signal as in the below <strong>example</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">monitor</span> <span class="kn">import</span> <span class="n">post_moderation</span>
+
+<span class="c"># handler_func: The function to handle your post moderation activities.</span>
+<span class="k">def</span> <span class="nf">handler_func</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c"># sender: MyModel</span>
+    <span class="c"># instance: my_model instance that was just moderated</span>
+    <span class="c"># do whatever you want..</span>
+    <span class="k">pass</span>
+
+<span class="c"># MyModel: The model whose moderation you are watching.</span>
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">post_moderation</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">handler_func</span><span class="p">,</span> <span class="n">sender</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the object moderated will be passed as the <tt class="docutils literal"><span class="pre">instance</span></tt> and its model
+as the <tt class="docutils literal"><span class="pre">sender</span></tt>. This will help you to write separate handlers for each model.</p>
+</div>
 </div>
 
 
@@ -196,6 +219,7 @@ methods with monitor_entry:</p>
 <li><a class="reference internal" href="#special-model-admin-class">Special model-admin class</a></li>
 <li><a class="reference internal" href="#data-protection">Data-protection</a></li>
 <li><a class="reference internal" href="#creation-of-objects-by-code">Creation of objects by code</a></li>
+<li><a class="reference internal" href="#post-moderation-hook">Post-moderation hook</a></li>
 </ul>
 </li>
 </ul>

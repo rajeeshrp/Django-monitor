@@ -47,11 +47,17 @@ class MonitorEntry(models.Model):
             return self.content_object.get_absolute_url()
 
     def _moderate(self, status, user, notes = ''):
+        from monitor import post_moderation
         self.status = status
         self.status_by = user
         self.status_date = datetime.datetime.now()
         self.notes = notes
         self.save()
+        # post_moderation signal will be generated now with the associated
+        # object as the ``instance`` and its model as the ``sender``.
+        sender_model = self.content_type.model_class()
+        instance = self.content_object
+        post_moderation.send(sender = sender_model, instance = instance)
 
     def approve(self, user = None, notes = ''):
         """ Approve the object"""

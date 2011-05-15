@@ -144,3 +144,27 @@ methods with monitor_entry:
      >>> me.is_approved()
      ... True
 
+Post-moderation hook
+=====================
+
+If you want to perform something after an object is moderated, you can make use
+of the ``post_moderation`` signal as in the below **example**: ::
+
+    from monitor import post_moderation
+
+    # handler_func: The function to handle your post moderation activities.
+    def handler_func(sender, instance, **kwargs):
+        # sender: MyModel
+        # instance: my_model instance that was just moderated
+        # do whatever you want..
+        pass
+
+    # MyModel: The model whose moderation you are watching.
+    class MyModel(models.Model):
+        pass
+
+    post_moderation.connect(handler_func, sender = MyModel)
+
+Note that the object moderated will be passed as the ``instance`` and its model
+as the ``sender``. This will help you to write separate handlers for each model.
+

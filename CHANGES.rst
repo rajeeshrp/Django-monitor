@@ -2,6 +2,15 @@
 Django-monitor: CHANGE LOG
 ==========================
 
+0.1.2
+=====
+* Django-monitor now generates a ``post_moderation`` signal whenever an object
+  is moderated. Developers can make use of this if they want to invoke some
+  function right after moderation. See ``docs/dev_howto.rst`` for details.
+
+0.1.1
+======
+
 * monitor now contains one more utility function, ``get_monitor_entry``.
   It will return the monitor_entry that corresponds to the given object.
   **Example**: ::
