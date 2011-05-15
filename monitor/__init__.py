@@ -1,5 +1,5 @@
 __author__ = "Rajeesh Nair"
-__version__ = "0.1.2a"
+__version__ = "0.1.3a"
 __copyright__ = "Copyright (c) 2011 Rajeesh"
 __license__ = "BSD"
 
@@ -24,8 +24,9 @@ def get_monitor_entry(obj):
     return getattr(obj, model_dict['monitor_name']) if model_dict else None
 
 def nq(
-    model, rel_fields = [], manager_name = 'objects',
-    status_name = 'status', monitor_name = 'monitor_entry', base_manager = None
+    model, rel_fields = [], can_delete_approved = True,
+    manager_name = 'objects', status_name = 'status',
+    monitor_name = 'monitor_entry', base_manager = None
 ):
     """ Register(enqueue) the model for moderation."""
     if not model_from_queue(model):
@@ -33,6 +34,7 @@ def nq(
         add_fields(model, manager_name, status_name, monitor_name, base_manager)
         _queue[model] = {
             'rel_fields': rel_fields,
+            'can_delete_approved': can_delete_approved,
             'manager_name': manager_name,
             'status_name': status_name,
             'monitor_name': monitor_name

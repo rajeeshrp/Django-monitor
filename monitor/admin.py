@@ -6,7 +6,7 @@ from monitor.actions import (
     approve_selected, challenge_selected, reset_to_pending
 )
 from monitor.filter import MonitorFilter
-from monitor import model_from_queue
+from monitor import model_from_queue, get_monitor_entry
 from monitor.conf import (
     PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS
 )
@@ -102,4 +102,18 @@ class MonitorAdmin(admin.ModelAdmin):
             self.opts.app_label.lower(), self.opts.object_name.lower()
         )
         return request.user.has_perm(mod_perm)
+
+    def has_delete_permission(self, request, obj = None):
+        """
+        If ``can_delete_approved`` is set to False in moderation queue and
+        the given object is approved, this will return False. Otherwise,
+        this behaves the same way as the parent class method does.
+        """
+        model = model_from_queue(self.opts.model)
+        if (
+            model and (not model['can_delete_approved']) and
+            obj is not None and get_monitor_entry(obj).is_approved()
+        ):
+            return False
+        return super(MonitorAdmin, self).has_delete_permission(request, obj)
 

@@ -2,8 +2,16 @@
 Django-monitor: CHANGE LOG
 ==========================
 
+0.1.3
+======
+
+* Now developers can block admin-users from deleting approved objects of
+  desired models. An additional parameter, ``can_delete_approved``, is added
+  to ``monitor.nq`` to enable this. Default value is ``True``.
+
 0.1.2
 =====
+
 * Django-monitor now generates a ``post_moderation`` signal whenever an object
   is moderated. Developers can make use of this if they want to invoke some
   function right after moderation. See ``docs/dev_howto.rst`` for details.
