@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Django-monitor v0.1 documentation" href="index.html" />
     <link rel="next" title="How to use (for admin-users)" href="admin_howto.html" />
-    <link rel="prev" title="Introduction" href="intro.html" /> 
+    <link rel="prev" title="Introduction to Django-monitor" href="intro.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +37,7 @@
           <a href="admin_howto.html" title="How to use (for admin-users)"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="intro.html" title="Introduction"
+          <a href="intro.html" title="Introduction to Django-monitor"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Django-monitor v0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -149,6 +149,13 @@ objects created by code will be in pending status by default. To moderate
 such an object as you wish, get its associated monitor_entry using
 <tt class="docutils literal"><span class="pre">monitor.get_monitor_entry</span></tt> and then invoke applicable public method of it.
 Available methods of monitor_entry are as follows:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><tt class="docutils literal"><span class="pre">user</span></tt> is an optional parameter in all those methods described below.
+Please pass the current user to the methods in all possible cases.
+<tt class="docutils literal"><span class="pre">request.user</span></tt> can be used for this whenever <tt class="docutils literal"><span class="pre">request</span></tt> is available.
+Otherwise, you can use <tt class="docutils literal"><span class="pre">get_current_user</span></tt> from <tt class="docutils literal"><span class="pre">monitor.middleware</span></tt>.</p>
+</div>
 <ol class="arabic">
 <li><dl class="first docutils">
 <dt>approve:</dt>
@@ -252,7 +259,7 @@ as the <tt class="docutils literal"><span class="pre">sender</span></tt>. This w
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="intro.html"
-                        title="previous chapter">Introduction</a></p>
+                        title="previous chapter">Introduction to Django-monitor</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="admin_howto.html"
                         title="next chapter">How to use (for admin-users)</a></p>
@@ -288,7 +295,7 @@ as the <tt class="docutils literal"><span class="pre">sender</span></tt>. This w
           <a href="admin_howto.html" title="How to use (for admin-users)"
              >next</a> |</li>
         <li class="right" >
-          <a href="intro.html" title="Introduction"
+          <a href="intro.html" title="Introduction to Django-monitor"
              >previous</a> |</li>
         <li><a href="index.html">Django-monitor v0.1 documentation</a> &raquo;</li> 
       </ul>

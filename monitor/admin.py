@@ -1,23 +1,110 @@
 
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import admin
 from django.contrib.admin.filterspecs import FilterSpec
+from django.shortcuts import render_to_response
+from django.utils.functional import update_wrapper
+from django.template import RequestContext
+from django.utils.safestring import mark_safe
 
 from monitor.actions import (
     approve_selected, challenge_selected, reset_to_pending
 )
 from monitor.filter import MonitorFilter
-from monitor import model_from_queue, get_monitor_entry
+from monitor import model_from_queue, get_monitor_entry, queued_models
 from monitor.conf import (
-    PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS
+    PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS,
+    PENDING_DESCR, CHALLENGED_DESCR
 )
+from monitor.models import MonitorEntry
 
 # Our objective is to place the custom monitor-filter on top
 FilterSpec.filter_specs.insert(
     0, (lambda f: getattr(f, 'monitor_filter', False), MonitorFilter)
 )
 
+
+class MEAdmin(admin.ModelAdmin):
+    """
+    A special admin-class for aggregating moderation summary, not to let users
+    add/edit/delete MonitorEntry objects directly. MonitorEntry works from
+    behind the curtain. This admin class is to provide a single stop for users
+    to get notified about pending/challenged model objects.
+    """
+    change_list_template = 'admin/monitor/monitorentry/change_list.html'
+
+    def get_urls(self):
+        """ The only url allowed is that for changelist_view. """
+        from django.conf.urls.defaults import patterns, url
+
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            return update_wrapper(wrapper, view)
+
+        info = self.model._meta.app_label, self.model._meta.module_name
+
+        urlpatterns = patterns('',
+            url(r'^$',
+                wrap(self.changelist_view),
+                name = '%s_%s_changelist' % info
+            ),
+        )
+        return urlpatterns
+
+    def has_add_permission(self, request, obj = None):
+        """ Returns False so that no add button is displayed in admin index"""
+        return False
+
+    def has_change_permission(self, request, obj = None):
+        """
+        Users will be lead to the moderation summary page when they click on
+        the link for changelist, which has a url like,
+        ``/admin/monitor/monitorentry/``. The admin site index page will show
+        the link to user, only if they have change_permission. So lets grant
+        that perm to all admin-users.
+        """
+        if obj is None and request.user.is_active and request.user.is_staff:
+            return True
+        return super(MEAdmin, self).has_change_permission(request, obj)
+
+    def changelist_view(self, request, extra_context = None):
+        """
+        The 'change list' admin view is overridden to return a page showing the
+        moderation summary aggregated for each model.
+        """
+        query_set = self.queryset(request)
+        model_list = []
+        for model in queued_models():
+            c_type = ContentType.objects.get_for_model(model)
+            q_set = query_set.filter(content_type = c_type)
+            ip_count = q_set.filter(status = PENDING_STATUS).count()
+            ch_count = q_set.filter(status = CHALLENGED_STATUS).count() 
+            app_label = model._meta.app_label
+            if ip_count or ch_count:
+                model_list.append({
+                    'model_name': model._meta.verbose_name,
+                    'app_name': app_label.title(),
+                    'pending': ip_count, 'challenged': ch_count,
+                    'admin_url': mark_safe(
+                        '/admin/%s/%s/' % (app_label, model.__name__.lower())
+                    ),
+                })
+        model_list.sort(key = lambda x: (x['app_name'], x['model_name']))
+        return render_to_response(
+            self.change_list_template,
+            {
+                'model_list': model_list,
+                'ip_status': PENDING_STATUS, 'ip_descr': PENDING_DESCR,
+                'ch_status': CHALLENGED_STATUS, 'ch_descr': CHALLENGED_DESCR
+            },
+            context_instance = RequestContext(request)
+        )
+
+admin.site.register(MonitorEntry, MEAdmin)
+
 class MonitorAdmin(admin.ModelAdmin):
-    """Use this for monitored models."""
+    """ModelAdmin for monitored models should inherit this."""
 
     # Which fields are to be made readonly after approval.
     protected_fields = ()
@@ -109,7 +196,7 @@ class MonitorAdmin(admin.ModelAdmin):
         the given object is approved, this will return False. Otherwise,
         this behaves the same way as the parent class method does.
         """
-        model = model_from_queue(self.opts.model)
+        model = model_from_queue(self.model)
         if (
             model and (not model['can_delete_approved']) and
             obj is not None and get_monitor_entry(obj).is_approved()

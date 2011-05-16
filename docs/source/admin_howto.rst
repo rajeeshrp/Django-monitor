@@ -13,7 +13,7 @@ screen-shot below :
    :scale: 70
    :alt: Change-list
 
-Who can moderate?
+Who can moderate
 ==================
 
 Django-monitor creates a moderate permission for each moderated model. Only
@@ -21,16 +21,30 @@ those users with required permission can moderate any object of a particular
 model. The superuser must assign those permissions to the appropriate users
 as they would do with other commonly found permissions.
 
-How to know the status of objects in change-list?
-=================================================
-By default, all existing objects of each model appear in its change-list. For
-moderated models, we add one more column, ``status`` to the right of each row.
-That column, as its name indicates, displays the current moderation status of
-each object you see in the list. Also, you can filter the objects by their
+What to moderate & from where
+===============================
+
+To see and moderate the pending/challenged objects of a particualr model, visit
+the change-list page of that model. By default, all existing objects appear
+there. For moderated models, we add one more column, ``status`` to the right of
+each row. That column, as its name indicates, displays the current moderation
+status of each object you see in the list. This helps you to identify the
+pending as well as challenged objects. Also, you can filter the objects by their
 ``moderation status`` using the filter options provided in the box to the right
 of change-list. Refer to the screen-shot given above.
 
-How to moderate?
+You need not regularly visit change-lists of all models to know whether there
+are any objects to be moderated. ``Moderation Queue`` is the shortcut for this.
+It will summarize the moderation status for all models in one page. Click on
+the ``Moderation Queue`` change-link under the ``Monitor`` app in your admin
+home page. You can see the number of pending and challenged objects for each
+moderated model arranged in a nice table in the resulting page. Clicking on
+each number will lead you to the corresponding change-list filtered by the
+respective status. eg, if you clicked on the number of pending objects of the
+model, say, `Book`, the change-list showing all pending book objects will be
+loaded.
+
+How to moderate
 =================
 
 Moderation is performed through 3 special change-list actions. They are,

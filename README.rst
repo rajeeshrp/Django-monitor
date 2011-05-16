@@ -45,7 +45,7 @@ Auto-moderation
 ----------------
 Any object created by a user with add permission will have an ``In Pending``
 status. If the user has got moderate permission also, the object created will
-automatically get approved (status is ``Approved``).
+automatically get approved (status becomes ``Approved``).
 
 Moderation from within admin changelist
 ----------------------------------------
@@ -92,11 +92,4 @@ Basic usage (developers)
 
 More details at http://django-monitor.readthedocs.org. Or check the `docs/`
 directory inside the source path, if you are working offline.
-
-To Do
-======
-
-* There should be a notification area to show counts of pending as well as
-  challenged objects for each moderated model. So user need not routinely check
-  every changelist just to know if there exists entries to be moderated.
 

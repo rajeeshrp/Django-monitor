@@ -122,6 +122,13 @@ such an object as you wish, get its associated monitor_entry using
 ``monitor.get_monitor_entry`` and then invoke applicable public method of it.
 Available methods of monitor_entry are as follows:
 
+.. note::
+
+   ``user`` is an optional parameter in all those methods described below.
+   Please pass the current user to the methods in all possible cases.
+   ``request.user`` can be used for this whenever ``request`` is available.
+   Otherwise, you can use ``get_current_user`` from ``monitor.middleware``.
+
 #. approve:
     ::
 

@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Introduction &mdash; Django-monitor v0.1 documentation</title>
+    <title>Introduction to Django-monitor &mdash; Django-monitor v0.1 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -48,63 +48,53 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="introduction">
-<span id="intro"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="introduction-to-django-monitor">
+<span id="intro"></span><h1>Introduction to Django-monitor<a class="headerlink" href="#introduction-to-django-monitor" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can skip this chapter if you have already read the README document in
+source path.</p>
+</div>
 <div class="section" id="about">
 <h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
 <p>Moderation seems to be some job each one want to do in their own way.
-Django-monitor is yet another django-app to help moderate model objects.
-It was started by cloning the project <cite>django-gatekeeper</cite> but offers
-different set of features. The name <tt class="docutils literal"><span class="pre">monitor</span></tt> is just to distinguish it
-from the existing app, <cite>django-moderation</cite>. (The terms, <tt class="docutils literal"><span class="pre">monitor</span></tt> and
-<tt class="docutils literal"><span class="pre">moderate</span></tt> are used with same meaning everywhere in the source code.)</p>
+Django-monitor is a django-app to moderate model objects. It was started as
+a clone of the <cite>django-gatekeeper</cite> project but with a different set of
+requirements. The name <tt class="docutils literal"><span class="pre">monitor</span></tt> is just to distinguish it from an existing
+project, <cite>django-moderation</cite>. (The terms, <tt class="docutils literal"><span class="pre">monitor</span></tt> and <tt class="docutils literal"><span class="pre">moderate</span></tt> are used
+with same meaning everywhere in the source.)</p>
 <p>Here, the moderation process is well integrated with django-admin. That is,
 all moderation actvities are performed from within the changelist page itself.</p>
 </div>
 <div class="section" id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="grab-the-source">
-<h3>Grab the Source<a class="headerlink" href="#grab-the-source" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Download the latest version from bitbucket repo:
 <a class="reference external" href="http://bitbucket.org/rajeesh/django-monitor">http://bitbucket.org/rajeesh/django-monitor</a>.</li>
-</ul>
-</div>
-<div class="section" id="place-it-in-your-path">
-<h3>Place it in your path<a class="headerlink" href="#place-it-in-your-path" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
 <li>Copy the <tt class="docutils literal"><span class="pre">monitor</span></tt> directory to some place in your python path.</li>
-</ul>
-</div>
-<div class="section" id="add-to-your-project">
-<h3>Add to your project<a class="headerlink" href="#add-to-your-project" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
 <li>Add to your django project by including it in settings.INSTALLED_APPS.</li>
 </ul>
-</div>
 </div>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="model-specific-permission">
 <h3>Model-specific permission<a class="headerlink" href="#model-specific-permission" title="Permalink to this headline">¶</a></h3>
-<p>Each moderated model will have an associated moderate permission of the form,
-<tt class="docutils literal"><span class="pre">moderate_&lt;model_name&gt;</span></tt> where <cite>&lt;model_name&gt;</cite> represents the name of the
-model. Only those users with that permission will be able to approve or
-challenge any object created for that model.</p>
+<p>Each moderated model will have an associated moderate permission. To approve
+or challenge any object created for a particular model, users need to have
+the corresponding permission.</p>
 </div>
 <div class="section" id="auto-moderation">
 <h3>Auto-moderation<a class="headerlink" href="#auto-moderation" title="Permalink to this headline">¶</a></h3>
 <p>Any object created by a user with add permission will have an <tt class="docutils literal"><span class="pre">In</span> <span class="pre">Pending</span></tt>
 status. If the user has got moderate permission also, the object created will
-automatically get approved (status is <tt class="docutils literal"><span class="pre">Approved</span></tt>).</p>
+automatically get approved (status becomes <tt class="docutils literal"><span class="pre">Approved</span></tt>).</p>
 </div>
 <div class="section" id="moderation-from-within-admin-changelist">
 <h3>Moderation from within admin changelist<a class="headerlink" href="#moderation-from-within-admin-changelist" title="Permalink to this headline">¶</a></h3>
-<p>The changelist view displays an additional column showing current moderation
-status of each object. Also, you can filter the changelist entries by their
-moderation status. Three actions, <tt class="docutils literal"><span class="pre">approve</span></tt>, <tt class="docutils literal"><span class="pre">challenge</span></tt> and
-<tt class="docutils literal"><span class="pre">reset</span> <span class="pre">to</span> <span class="pre">pending</span></tt> are provided for moderation. The user just need to select
-the objects, choose appropriate action and press <tt class="docutils literal"><span class="pre">Go</span></tt> to moderate.</p>
+<p>The changelist of a moderated model displays the current moderation status of
+all objects. Also, you can filter the objects by their moderation status. Three
+actions are available for moderation. To moderate, user just need to select the
+objects, choose appropriate action and press <tt class="docutils literal"><span class="pre">Go</span></tt>.</p>
 </div>
 <div class="section" id="related-moderation">
 <h3>Related moderation<a class="headerlink" href="#related-moderation" title="Permalink to this headline">¶</a></h3>
@@ -112,22 +102,12 @@ the objects, choose appropriate action and press <tt class="docutils literal"><s
 model objects which also can get moderated along with the original ones. The
 developer can specify such related models to be moderated during registration.</p>
 </div>
-<div class="section" id="edit-lock">
-<h3>Edit-Lock<a class="headerlink" href="#edit-lock" title="Permalink to this headline">¶</a></h3>
-<p>The developer can protect the approved objects from further modification to
-maintain data integrity. The fields which are not meant to be changed after
-approval can be specified in the model-admin using <tt class="docutils literal"><span class="pre">protected_fields</span></tt> option.
-The model-admin will club them with readonly_fields if the object is approved.</p>
+<div class="section" id="data-protection">
+<h3>Data protection<a class="headerlink" href="#data-protection" title="Permalink to this headline">¶</a></h3>
+<p>The developer can prevent admin-users from changing values of selected fields
+of approved objects. Deleting approved objects also can be prevented if your
+client&#8217;s business requires that.</p>
 </div>
-</div>
-<div class="section" id="todo">
-<h2>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>There should be a facility to lock deletion of approved objects too.</li>
-<li>There should be a notification area to show counts of pending as well as
-challenged objects for each moderated model. So user need not routinely check
-every changelist just to know if there exists entries to be moderated.</li>
-</ul>
 </div>
 </div>
 
@@ -139,23 +119,17 @@ every changelist just to know if there exists entries to be moderated.</li>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#">Introduction to Django-monitor</a><ul>
 <li><a class="reference internal" href="#about">About</a></li>
-<li><a class="reference internal" href="#install">Install</a><ul>
-<li><a class="reference internal" href="#grab-the-source">Grab the Source</a></li>
-<li><a class="reference internal" href="#place-it-in-your-path">Place it in your path</a></li>
-<li><a class="reference internal" href="#add-to-your-project">Add to your project</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#install">Install</a></li>
 <li><a class="reference internal" href="#features">Features</a><ul>
 <li><a class="reference internal" href="#model-specific-permission">Model-specific permission</a></li>
 <li><a class="reference internal" href="#auto-moderation">Auto-moderation</a></li>
 <li><a class="reference internal" href="#moderation-from-within-admin-changelist">Moderation from within admin changelist</a></li>
 <li><a class="reference internal" href="#related-moderation">Related moderation</a></li>
-<li><a class="reference internal" href="#edit-lock">Edit-Lock</a></li>
+<li><a class="reference internal" href="#data-protection">Data protection</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#todo">TODO</a></li>
 </ul>
 </li>
 </ul>

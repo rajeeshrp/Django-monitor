@@ -2,6 +2,17 @@
 Django-monitor: CHANGE LOG
 ==========================
 
+0.1.4
+======
+
+* Now we have finished implementation of one more TODO things: A single place
+  to manage monitored objects. The model change-link, ``Moderation Queue``,
+  under the app, ``Monitor`` in admin-home page leads user to a page listing
+  the counts of pending/challenged objects for each monitored models.
+
+* ERROR_FIX: In ``monitor.admin.has_delete_permission``, we tried to retrieve
+  the model class as ``self.opts.model``. It should be ``self.model``. Fixed.
+
 0.1.3
 ======
 

@@ -38,6 +38,8 @@ class MonitorEntry(models.Model):
 
     class Meta:
         app_label = 'monitor'
+        verbose_name = 'moderation Queue'
+        verbose_name_plural = 'moderation Queue'
 
     def __unicode__(self):
         return "[%s] %s" % (self.get_status_display(), self.content_object)
