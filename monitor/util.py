@@ -151,7 +151,8 @@ def save_handler(sender, instance, **kwargs):
     # Create corresponding monitor entry
     if kwargs.get('created', None):
         MonitorEntry.objects.create(
-            status = status, content_object = instance,
+            status = status, status_by = user,
+            content_object = instance,
             timestamp = datetime.now()
         )
 

@@ -46,16 +46,15 @@
             
   <div class="section" id="how-to-use-for-admin-users">
 <span id="admin-howto"></span><h1>How to use (for admin-users)<a class="headerlink" href="#how-to-use-for-admin-users" title="Permalink to this headline">¶</a></h1>
-<p>All moderation activities can be performed from within the admin changelist
-itself. The changelist view of a moderated model will look like that in the
-screen-shot below :</p>
-<a class="reference internal image-reference" href="_images/custom_changelist4.jpg"><img alt="Change-list" src="_images/custom_changelist4.jpg" style="width: 715.4px; height: 396.9px;" /></a>
+<p>All moderation activities can be performed from within the admin interface
+itself. Following sections describe the process in detail. The figures are
+based on an example app, <tt class="docutils literal"><span class="pre">TestApp</span></tt> with models like <tt class="docutils literal"><span class="pre">Author</span></tt> and <tt class="docutils literal"><span class="pre">Book</span></tt>.</p>
 <div class="section" id="who-can-moderate">
 <h2>Who can moderate<a class="headerlink" href="#who-can-moderate" title="Permalink to this headline">¶</a></h2>
-<p>Django-monitor creates a moderate permission for each moderated model. Only
-those users with required permission can moderate any object of a particular
-model. The superuser must assign those permissions to the appropriate users
-as they would do with other commonly found permissions.</p>
+<p>Django-monitor creates a moderate permission for each moderated model.
+To moderate any object of a model, user need to have permission for that
+particular model. The superuser must assign those permissions to the
+appropriate users as they would do with other permissions.</p>
 </div>
 <div class="section" id="what-to-moderate-from-where">
 <h2>What to moderate &amp; from where<a class="headerlink" href="#what-to-moderate-from-where" title="Permalink to this headline">¶</a></h2>
@@ -64,26 +63,35 @@ the change-list page of that model. By default, all existing objects appear
 there. For moderated models, we add one more column, <tt class="docutils literal"><span class="pre">status</span></tt> to the right of
 each row. That column, as its name indicates, displays the current moderation
 status of each object you see in the list. This helps you to identify the
-pending as well as challenged objects. Also, you can filter the objects by their
-<tt class="docutils literal"><span class="pre">moderation</span> <span class="pre">status</span></tt> using the filter options provided in the box to the right
-of change-list. Refer to the screen-shot given above.</p>
+pending as well as challenged objects. See the figure:</p>
+<img alt="Status column" src="_images/moderation_status_column.jpg" />
+<p>Also, you can filter the objects by <tt class="docutils literal"><span class="pre">moderation</span> <span class="pre">status</span></tt> using the options
+provided in the box to the right of change-list. Refer to the figure below:</p>
+<img alt="Filter" src="_images/moderation_filter.jpg" />
 <p>You need not regularly visit change-lists of all models to know whether there
 are any objects to be moderated. <tt class="docutils literal"><span class="pre">Moderation</span> <span class="pre">Queue</span></tt> is the shortcut for this.
-It will summarize the moderation status for all models in one page. Click on
-the <tt class="docutils literal"><span class="pre">Moderation</span> <span class="pre">Queue</span></tt> change-link under the <tt class="docutils literal"><span class="pre">Monitor</span></tt> app in your admin
-home page. You can see the number of pending and challenged objects for each
-moderated model arranged in a nice table in the resulting page. Clicking on
-each number will lead you to the corresponding change-list filtered by the
-respective status. eg, if you clicked on the number of pending objects of the
-model, say, <cite>Book</cite>, the change-list showing all pending book objects will be
-loaded.</p>
+It will summarize the moderation status for all models in one page. In your
+admin home page there is a <tt class="docutils literal"><span class="pre">Moderation</span> <span class="pre">Queue</span></tt> change-link under <tt class="docutils literal"><span class="pre">Monitor</span></tt>
+app. See the figure:</p>
+<img alt="Moderation Queue change-link" src="_images/moderation_changelink.jpg" />
+<p>Clicking on it will lead you to a moderation queue page from where you can see
+a nice table listing out the number of pending and challenged objects for each
+moderated model. An example figure is given below:</p>
+<a class="reference internal image-reference" href="_images/moderation_queue.jpg"><img alt="Moderation Queue page" src="_images/moderation_queue.jpg" style="width: 562.8px; height: 141.4px;" /></a>
+<p>Note that the pointer points to the number <cite>2</cite> in the figure. This number
+indicates that there are 2 pending <tt class="docutils literal"><span class="pre">Author</span></tt> objects now. Click on that number
+and you will be lead to the <tt class="docutils literal"><span class="pre">Author</span></tt> change-list where you can see both of the
+pending objects. Similarly, you can find pending/challenged objects of any model
+from here.</p>
 </div>
 <div class="section" id="how-to-moderate">
 <h2>How to moderate<a class="headerlink" href="#how-to-moderate" title="Permalink to this headline">¶</a></h2>
 <p>Moderation is performed through 3 special change-list actions. They are,
 <tt class="docutils literal"><span class="pre">Approve</span> <span class="pre">selected</span></tt>, <tt class="docutils literal"><span class="pre">Challenge</span> <span class="pre">selected</span></tt> and <tt class="docutils literal"><span class="pre">Reset</span> <span class="pre">selected</span> <span class="pre">to</span> <span class="pre">pending</span></tt>.
-If the manager selects few objects, choose the action <tt class="docutils literal"><span class="pre">Approve</span> <span class="pre">selected</span></tt> and
-press <tt class="docutils literal"><span class="pre">Go</span></tt>, those objects will get approved. Similarly, one can challenge some
+The figure below shows the actions found in <tt class="docutils literal"><span class="pre">Author</span></tt> changelist:</p>
+<img alt="Moderation actions" src="_images/moderation_actions.jpg" />
+<p>If the manager selects few objects, choose the action <tt class="docutils literal"><span class="pre">Approve</span> <span class="pre">selected</span></tt> and
+press <tt class="docutils literal"><span class="pre">Go</span></tt>, those objects will get approved. Similarly, one can challenge
 objects too. Once some objects get challenged, the non-managers may check them
 again and make required corrections. After that, they can reset the status to
 <tt class="docutils literal"><span class="pre">In</span> <span class="pre">pending</span></tt> using the action, <tt class="docutils literal"><span class="pre">Reset</span> <span class="pre">selected</span> <span class="pre">to</span> <span class="pre">pending</span></tt> so that their
