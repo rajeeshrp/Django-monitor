@@ -99,6 +99,13 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
             )
             return CustomQuerySet(self.model, q.query)
 
+        def __getattr__(self, attr):
+            """ Try to get the rest of attributes from queryset """
+            try:
+                return getattr(self, attr)
+            except AttributeError:
+                return getattr(self.get_query_set(), attr)
+
     def _get_monitor_entry(self):
         """ accessor for monitor_entry that caches the object """
         if not hasattr(self, '_monitor_entry'):
@@ -122,10 +129,12 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
     # filtering of model objects by their moderation status.
     # But `status` is not a real field and Django does not support filters
     # on non-fields as of now. Our way out is to attach the filter to some
-    # other field which the developer may never include in list_filter.
-    # I think, prmary key is the best option.
-    # (Latest Django dev-version has undergone changes to allow non-fields.)
-    cls._meta.get_field(cls._meta.pk.attname).monitor_filter = True
+    # other field which the developer may never include in ``list_filter``.
+
+    # Used ``pk`` before but subclassed models raise FieldDoesNotExist here.
+    # So let's use ``id``. Latest Django dev-version has undergone changes to
+    # allow non-fields. So this hack must be for a short period of time.
+    cls._meta.get_field('id').monitor_filter = True
 
     # Copy manager to default_class
     cls._default_manager = manager
@@ -137,6 +146,7 @@ def save_handler(sender, instance, **kwargs):
     2. Auto-moderate objects if enough permissions are available.
     3. Moderate specified related objects too.
     """
+    import monitor
     # Auto-moderation
     user = get_current_user()
     opts = instance.__class__._meta
@@ -156,12 +166,32 @@ def save_handler(sender, instance, **kwargs):
             timestamp = datetime.now()
         )
 
+        # Create one monitor_entry per moderated parent.
+        monitored_parents = filter(
+            lambda x: monitor.model_from_queue(x),
+            instance._meta.parents.keys()
+        )
+        for parent in monitored_parents:
+            parent_ct = ContentType.objects.get_for_model(parent)
+            parent_pk_field = instance._meta.get_ancestor_link(parent)
+            parent_pk = getattr(instance, parent_pk_field.attname)
+            try:
+                me = MonitorEntry.objects.get(
+                    content_type = parent_ct, object_id = parent_pk
+                )
+            except MonitorEntry.DoesNotExist:
+                me = MonitorEntry(
+                    content_type = parent_ct, object_id = parent_pk,
+                )
+            me.moderate(status, user)
+
         # Moderate related objects too... 
-        from monitor import model_from_queue
-        model = model_from_queue(instance.__class__)
+        model = monitor.model_from_queue(instance.__class__)
         if model:
             for rel_name in model['rel_fields']:
-                moderate_rel_objects(getattr(instance, rel_name), status, user)
+                rel_obj = getattr(instance, rel_name, None)
+                if rel_obj:
+                    moderate_rel_objects(rel_obj, status, user)
 
 def moderate_rel_objects(given, status, user = None):
     """
@@ -183,12 +213,16 @@ def moderate_rel_objects(given, status, user = None):
             model = model_from_queue(qset.model)
             if model:
                 for rel_name in model['rel_fields']:
-                    moderate_rel_objects(getattr(obj, rel_name), status, user)
+                    rel_obj = getattr(obj, rel_name, None)
+                    if rel_obj:
+                        moderate_rel_objects(rel_obj, status, user)
     else:
         me = MonitorEntry.objects.get_for_instance(given)
         me.moderate(status, user)
         model = model_from_queue(given.__class__)
         if model:
             for rel_name in model['rel_fields']:
-                moderate_rel_objects(getattr(given, rel_name), status, user)
+                rel_obj = getattr(given, rel_name, None)
+                if rel_obj:
+                    moderate_rel_objects(rel_obj, status, user)
 

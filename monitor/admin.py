@@ -112,7 +112,7 @@ class MonitorAdmin(admin.ModelAdmin):
     def __init__(self, model, admin_site):
         """ Overridden to add a custom filter to list_filter """
         super(MonitorAdmin, self).__init__(model, admin_site)
-        self.list_filter = [self.opts.pk.attname] + list(self.list_filter)
+        self.list_filter = ['id'] + list(self.list_filter)
         self.list_display = list(self.list_display) + ['get_status_display']
 
     def queryset(self, request):

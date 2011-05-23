@@ -1,10 +1,11 @@
 __author__ = "Rajeesh Nair"
-__version__ = "0.1.4a"
+__version__ = "0.1.5a"
 __copyright__ = "Copyright (c) 2011 Rajeesh"
 __license__ = "BSD"
 
 from django.dispatch import Signal
 from django.db.models import signals
+from django.db.models.loading import get_model
 
 from monitor.util import create_moderate_perms, add_fields, save_handler
 
@@ -31,7 +32,13 @@ def nq(
     """ Register(enqueue) the model for moderation."""
     if not model_from_queue(model):
         signals.post_save.connect(save_handler, sender = model)
-        add_fields(model, manager_name, status_name, monitor_name, base_manager)
+        registered_model = get_model(
+            model._meta.app_label, model._meta.object_name, False
+        )
+        add_fields(
+            registered_model, manager_name, status_name,
+            monitor_name, base_manager
+        )
         _queue[model] = {
             'rel_fields': rel_fields,
             'can_delete_approved': can_delete_approved,

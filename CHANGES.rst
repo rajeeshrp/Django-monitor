@@ -2,6 +2,21 @@
 Django-monitor: CHANGE LOG
 ==========================
 
+0.1.5
+======
+
+* Django-monitor contained a bug that pops up when you subclass a moderated
+  model and enqueue that sub-class also for moderation (Ticket #1). When you
+  create an instance for a sub-class of any non-abstract model, django creates
+  corresponding parent class instances too. But no ``post_save`` signal is
+  emitted for any of those parent instances. Since moderation is invoked on
+  the ``post_save`` signal, no monitor_entry is created for any of those
+  parents. The CustomQueryset we use assumes that a monitor_entry will be there
+  for all moderated model instances. Since it can not find any for the parents,
+  it always return empty rows when you try to access them. Fixed by adding a
+  couple of lines in our ``monitor.util.save_handler`` to create monitor_entries
+  for all moderated parent instances as well.
+
 0.1.4
 ======
 
