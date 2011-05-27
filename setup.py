@@ -10,7 +10,7 @@ setup(
     long_description = open("README.rst").read(),
     install_requires = [
         "django >= 1.1",
-    ]
+    ],
     classifiers = [
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
@@ -28,9 +28,6 @@ setup(
     packages = find_packages('monitor'),
     package_dir = {'': 'monitor'},
     include_package_data = True,
-    install_requires=[
-        'setuptools',
-    ],
     zip_safe = True,
 )
 
