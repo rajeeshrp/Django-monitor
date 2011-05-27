@@ -27,13 +27,13 @@ each row. That column, as its name indicates, displays the current moderation
 status of each object you see in the list. This helps you to identify the
 pending as well as challenged objects. See the figure:
 
-.. image:: _static/moderation_status_column.jpg
+.. image:: _images/moderation_status_column.jpg
    :alt: Status column
 
 Also, you can filter the objects by ``moderation status`` using the options
 provided in the box to the right of change-list. Refer to the figure below:
 
-.. image:: _static/moderation_filter.jpg
+.. image:: _images/moderation_filter.jpg
    :alt: Filter
 
 You need not regularly visit change-lists of all models to know whether there
@@ -42,14 +42,14 @@ It will summarize the moderation status for all models in one page. In your
 admin home page there is a ``Moderation Queue`` change-link under ``Monitor``
 app. See the figure:
 
-.. image:: _static/moderation_changelink.jpg
+.. image:: _images/moderation_changelink.jpg
    :alt: Moderation Queue change-link
 
 Clicking on it will lead you to a moderation queue page from where you can see
 a nice table listing out the number of pending and challenged objects for each
 moderated model. An example figure is given below:
 
-.. image:: _static/moderation_queue.jpg
+.. image:: _images/moderation_queue.jpg
    :scale: 70
    :alt: Moderation Queue page
 
@@ -66,7 +66,7 @@ Moderation is performed through 3 special change-list actions. They are,
 ``Approve selected``, ``Challenge selected`` and ``Reset selected to pending``.
 The figure below shows the actions found in ``Author`` changelist:
 
-.. image:: _static/moderation_actions.jpg
+.. image:: _images/moderation_actions.jpg
    :alt: Moderation actions
 
 If the manager selects few objects, choose the action ``Approve selected`` and
