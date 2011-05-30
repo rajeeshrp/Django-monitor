@@ -280,3 +280,26 @@ def moderate_rel_objects(given, status, user = None):
                 if rel_obj:
                     moderate_rel_objects(rel_obj, status, user)
 
+def delete_handler(sender, instance, **kwargs):
+    """ When an instance is deleted, delete corresponding monitor_entries too"""
+    from monitor import model_from_queue
+    if model_from_queue(sender):
+        me = MonitorEntry.objects.get_for_instance(instance)
+        if me:
+            me.delete()
+        # Delete monitor_entries of parents too
+        monitored_parents = filter(
+            lambda x: model_from_queue(x),
+            instance._meta.parents.keys()
+        )
+        for parent in monitored_parents:
+            parent_ct = ContentType.objects.get_for_model(parent)
+            parent_pk_field = instance._meta.get_ancestor_link(parent)
+            parent_pk = getattr(instance, parent_pk_field.attname)
+            try:
+                me = MonitorEntry.objects.get(
+                    content_type = parent_ct, object_id = parent_pk
+                )
+                me.delete()
+            except MonitorEntry.DoesNotExist:
+                pass

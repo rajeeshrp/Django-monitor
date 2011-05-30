@@ -287,3 +287,42 @@ class ModTest(SettingsTestCase):
         self.assertEquals(eb1.is_approved, True)
         self.assertEquals(eb1.book_ptr.is_approved, True)
 
+    def test_5_auto_delete_monitor_entries(self):
+        """
+        When an instance of a moderated model is deleted, the monitor entries
+        corresponding to the instance and all of its parent instances also
+        should be deleted.
+        """
+        from monitor.models import MonitorEntry
+
+        self.assertEquals(MonitorEntry.objects.count(), 0)
+        ebook_ct = ContentType.objects.get_for_model(EBook)
+        book_ct = ContentType.objects.get_for_model(Book)
+
+        pub1 = Publisher.objects.create(
+            name = 'test_pub', num_awards = 3
+        )
+        auth1 = Author.objects.create(
+           name = 'test_auth', age = 34
+        )
+        eb1 = EBook.objects.create(
+            isbn='123456789', name='test_ebook', pages=300, publisher = pub1
+        )
+        eb1.authors = [auth1]
+        eb1.save()
+
+        # 1 monitor_entry each for auth1, eb1 & its parent, eb1.book_ptr.
+        self.assertEquals(MonitorEntry.objects.count(), 3)
+        ebook_mes = MonitorEntry.objects.filter(content_type = ebook_ct)
+        book_mes = MonitorEntry.objects.filter(content_type = book_ct)
+        self.assertEquals(ebook_mes.count(), 1)
+        self.assertEquals(book_mes.count(), 1)
+
+        eb1.delete()
+        # MonitorEntry object for auth1 remains. Others removed.
+        self.assertEquals(MonitorEntry.objects.count(), 1)
+        ebook_mes = MonitorEntry.objects.filter(content_type = ebook_ct)
+        book_mes = MonitorEntry.objects.filter(content_type = book_ct)
+        self.assertEquals(ebook_mes.count(), 0)
+        self.assertEquals(book_mes.count(), 0) 
+

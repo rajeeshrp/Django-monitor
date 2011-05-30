@@ -7,7 +7,9 @@ from django.dispatch import Signal
 from django.db.models import signals
 from django.db.models.loading import get_model
 
-from monitor.util import create_moderate_perms, add_fields, save_handler
+from monitor.util import (
+    create_moderate_perms, add_fields, save_handler, delete_handler
+)
 
 _queue = {}
 
@@ -36,6 +38,7 @@ def nq(
     """ Register(enqueue) the model for moderation."""
     if not model_from_queue(model):
         signals.post_save.connect(save_handler, sender = model)
+        signals.pre_delete.connect(delete_handler, sender = model)
         registered_model = get_model(
             model._meta.app_label, model._meta.object_name, False
         )
