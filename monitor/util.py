@@ -106,6 +106,15 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
             except AttributeError:
                 return getattr(self.get_query_set(), attr)
 
+    def _get_monitor_status(self):
+        """
+        Accessor for monitor_status.
+        To be added to the model as a property, ``monitor_status``.
+        """
+        if not hasattr(self, '_status'):
+            return getattr(self, monitor_name).status
+        return self._status
+
     def _get_monitor_entry(self):
         """ accessor for monitor_entry that caches the object """
         if not hasattr(self, '_monitor_entry'):
@@ -114,17 +123,64 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
 
     def _get_status_display(self):
         """ to display the moderation status in verbose """
-        return STATUS_DICT[self._status]
+        return STATUS_DICT[self.monitor_status]
     _get_status_display.short_description = status_name
+
+    def moderate(self, status, user = None, notes = ''):
+        """ developers may use this to moderate objects """
+        import monitor
+        getattr(self, monitor_name).moderate(status, user, notes)
+        # Auto-Moderate parents also
+        monitored_parents = filter(
+            lambda x: monitor.model_from_queue(x),
+            self._meta.parents.keys()
+        )
+        for parent in monitored_parents:
+            parent_ct = ContentType.objects.get_for_model(parent)
+            parent_pk_field = self._meta.get_ancestor_link(parent)
+            parent_pk = getattr(self, parent_pk_field.attname)
+            me = MonitorEntry.objects.get(
+                content_type = parent_ct, object_id = parent_pk
+            )
+            me.moderate(status, user)
+
+    def approve(self, user = None, notes = ''):
+        """ Approve the object & its parents."""
+        self.moderate(APPROVED_STATUS, user, notes)
+
+    def challenge(self, user = None, notes = ''):
+        """Challenge"""
+        self.moderate(CHALLENGED_STATUS, user, notes)
+
+    def reset_to_pending(self, user = None, notes = ''):
+        """Reset"""
+        self.moderate(PENDING_STATUS, user, notes)
+
+    def is_approved(self):
+        return self.monitor_status == APPROVED_STATUS
+
+    def is_pending(self):
+        return self.monitor_status == PENDING_STATUS
+
+    def is_challenged(self):
+        return self.monitor_status == CHALLENGED_STATUS
 
     # Add custom manager & monitor_entry to class
     manager = CustomManager()
     cls.add_to_class(manager_name, manager)
     cls.add_to_class(monitor_name, property(_get_monitor_entry))
-    cls.add_to_class(status_name, property(lambda self: self._status))
+    cls.add_to_class('monitor_status', property(_get_monitor_status)) 
+    cls.add_to_class(status_name, lambda self: self.monitor_status)
     cls.add_to_class(
-        'get_status_display', _get_status_display
+        'get_monitor_status_display', _get_status_display
     )
+    cls.add_to_class('moderate', moderate)
+    cls.add_to_class('approve', approve)
+    cls.add_to_class('challenge', challenge)
+    cls.add_to_class('reset_to_pending', reset_to_pending)
+    cls.add_to_class('is_approved', property(is_approved))
+    cls.add_to_class('is_challenged', property(is_challenged))
+    cls.add_to_class('is_pending', property(is_pending))
     # We have a custom filter defined in monitor.filter to enable
     # filtering of model objects by their moderation status.
     # But `status` is not a real field and Django does not support filters
@@ -141,10 +197,10 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
 
 def save_handler(sender, instance, **kwargs):
     """
-    After saving an object in moderated class, do the following:
-    1. Create a corresponding monitor entry.
-    2. Auto-moderate objects if enough permissions are available.
-    3. Moderate specified related objects too.
+    The following things are done after creating an object in moderated class:
+    1. Creates monitor entries for object and its parents.
+    2. Auto-approves object, its parents & specified related objects if user 
+       has ``moderate`` permission. Otherwise, they are put in pending.
     """
     import monitor
     # Auto-moderation
@@ -208,8 +264,7 @@ def moderate_rel_objects(given, status, user = None):
     if hasattr(given, 'all'):
         qset = given.all()
         for obj in qset:
-            me = MonitorEntry.objects.get_for_instance(obj)
-            me.moderate(status, user)
+            obj.moderate(status, user)
             model = model_from_queue(qset.model)
             if model:
                 for rel_name in model['rel_fields']:
@@ -217,8 +272,7 @@ def moderate_rel_objects(given, status, user = None):
                     if rel_obj:
                         moderate_rel_objects(rel_obj, status, user)
     else:
-        me = MonitorEntry.objects.get_for_instance(given)
-        me.moderate(status, user)
+        given.moderate(status, user)
         model = model_from_queue(given.__class__)
         if model:
             for rel_name in model['rel_fields']:

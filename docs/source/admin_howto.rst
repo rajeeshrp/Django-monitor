@@ -69,8 +69,8 @@ The figure below shows the actions found in ``Author`` changelist:
 .. image:: _images/moderation_actions.jpg
    :alt: Moderation actions
 
-If the manager selects few objects, choose the action ``Approve selected`` and
-press ``Go``, those objects will get approved. Similarly, one can challenge 
+If the manager selects few objects, chooses the action ``Approve selected`` and
+presses ``Go``, those objects will get approved. Similarly, one can challenge 
 objects too. Once some objects get challenged, the non-managers may check them
 again and make required corrections. After that, they can reset the status to
 ``In pending`` using the action, ``Reset selected to pending`` so that their

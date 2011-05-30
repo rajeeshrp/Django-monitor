@@ -62,15 +62,15 @@ class MonitorEntry(models.Model):
         post_moderation.send(sender = sender_model, instance = instance)
 
     def approve(self, user = None, notes = ''):
-        """ Approve the object"""
+        """Deprecated. Approve the object"""
         self._moderate(APPROVED_STATUS, user, notes)
 
     def challenge(self, user = None, notes = ''):
-        """ Challenge the object """
+        """Deprectaed. Challenge the object """
         self._moderate(CHALLENGED_STATUS, user, notes)
 
     def reset_to_pending(self, user = None, notes = ''):
-        """ Reset status from Challenged to pending"""
+        """Deprecated. Reset status from Challenged to pending"""
         self._moderate(PENDING_STATUS, user, notes)
 
     def moderate(self, status, user = None, notes = ''):
@@ -82,12 +82,15 @@ class MonitorEntry(models.Model):
             self._moderate(status, user, notes)
 
     def is_approved(self):
+        """ Deprecated"""
         return self.status == APPROVED_STATUS
 
     def is_pending(self):
+        """ Deprecated."""
         return self.status == PENDING_STATUS
 
     def is_challenged(self):
+        """ Deprecated."""
         return self.status == CHALLENGED_STATUS
 
 MONITOR_TABLE = MonitorEntry._meta.db_table

@@ -20,7 +20,11 @@ def queued_models():
     return _queue.keys()
 
 def get_monitor_entry(obj):
-    """ Returns the monitor_entry for the given object."""
+    """
+    Returns the monitor_entry for the given object.
+    Deprecated.
+    No one except the given object need access to the monitor_entry.
+    """
     model_dict = model_from_queue(obj.__class__)
     return getattr(obj, model_dict['monitor_name']) if model_dict else None
 

@@ -26,6 +26,10 @@ class Publisher(models.Model):
     def __unicode__(self):
         return self.name
 
+class WebPub(Publisher):
+    """ To check something with subclassed models """
+    pass
+
 class Book(models.Model):
     """ Moderated model with related objects """
     isbn = models.CharField(max_length = 9)
@@ -37,12 +41,24 @@ class Book(models.Model):
     class Meta:
         app_label = 'testapp'
 
+    def __unicode__(self):
+        return self.name
+
 monitor.nq(Book, ['supplements', ])
+
+class EBook(Book):
+    """ Subclassing a moderated model """
+    pass
+
+monitor.nq(EBook, ['supplements', ])
 
 class Supplement(models.Model):
     """ Objects of this model get moderated along with Book"""
     serial_num = models.IntegerField()
     book = models.ForeignKey(Book, related_name = 'supplements')
+
+    def __unicode__(self):
+        return 'Supplement %s to %s' % (self.serial_num, self.book)
 
 monitor.nq(Supplement)
 

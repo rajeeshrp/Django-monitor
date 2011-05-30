@@ -11,7 +11,7 @@ from monitor.actions import (
     approve_selected, challenge_selected, reset_to_pending
 )
 from monitor.filter import MonitorFilter
-from monitor import model_from_queue, get_monitor_entry, queued_models
+from monitor import model_from_queue, queued_models
 from monitor.conf import (
     PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS,
     PENDING_DESCR, CHALLENGED_DESCR
@@ -113,7 +113,9 @@ class MonitorAdmin(admin.ModelAdmin):
         """ Overridden to add a custom filter to list_filter """
         super(MonitorAdmin, self).__init__(model, admin_site)
         self.list_filter = ['id'] + list(self.list_filter)
-        self.list_display = list(self.list_display) + ['get_status_display']
+        self.list_display = (
+            list(self.list_display) + ['get_monitor_status_display']
+        )
 
     def queryset(self, request):
         """
@@ -147,7 +149,10 @@ class MonitorAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj = None):
         """ Overridden to include protected_fields as well."""
-        if self.is_monitored() and obj is not None and obj.status == APPROVED_STATUS:
+        if (
+            self.is_monitored() and 
+            obj is not None and obj.is_approved
+        ):
             return self.readonly_fields + self.protected_fields
         return self.readonly_fields
 
@@ -199,7 +204,7 @@ class MonitorAdmin(admin.ModelAdmin):
         model = model_from_queue(self.model)
         if (
             model and (not model['can_delete_approved']) and
-            obj is not None and get_monitor_entry(obj).is_approved()
+            obj is not None and obj.is_approved
         ):
             return False
         return super(MonitorAdmin, self).has_delete_permission(request, obj)

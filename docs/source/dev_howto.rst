@@ -117,10 +117,8 @@ Creation of objects by code
 
 The above sections shared tips on how to prepare your application for
 moderation by admin-users. What about the objects you create by code? All
-objects created by code will be in pending status by default. To moderate
-such an object as you wish, get its associated monitor_entry using
-``monitor.get_monitor_entry`` and then invoke applicable public method of it.
-Available methods of monitor_entry are as follows:
+objects created by code will be in pending status by default. You can moderate
+them by code using the following public methods of the moderated model:
 
 .. note::
 
@@ -151,13 +149,11 @@ Available methods of monitor_entry are as follows:
 
 **An example usage** ::
 
-    >>> import monitor
     >>> my_inst = MyModel.objects.create(arg1 = 1)
-    >>> me = monitor.get_monitor_entry(my_inst)
-    >>> me.approve()
+    >>> my_inst.approve()
 
-To let you know which status a particular object is in, there are three more
-methods with monitor_entry:
+In addition, there are 3 public boolean properties also to let you know which
+moderation status a particular object is in.
 
 #. ``is_approved``
 
@@ -168,14 +164,13 @@ methods with monitor_entry:
 **An example usage** ::
 
     >>> my_inst = MyModel.objects.create()
-    >>> me = monitor.get_monitor_entry(my_inst)
     >>> # Will be in pending status by default.
-    >>> me.is_approved()
+    >>> my_inst.is_approved
     ... False
-    >>> me.is_pending()
+    >>> my_inst.is_pending
     ... True
-    >>> me.approve()
-    >>> me.is_approved()
+    >>> my_inst.approve()
+    >>> my_inst.is_approved
     ... True
 
 Post-moderation hook
