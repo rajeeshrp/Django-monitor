@@ -3,12 +3,12 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.admin.util import model_ngettext
 from django.utils.translation import ugettext_lazy, ugettext as _
 
-from monitor.util import moderate_rel_objects
-from monitor import model_from_queue
-from monitor.conf import (
+from django_monitor.util import moderate_rel_objects
+from django_monitor import model_from_queue
+from django_monitor.conf import (
     STATUS_DICT, PENDING_STATUS, APPROVED_STATUS, CHALLENGED_STATUS
 )
-from monitor.models import MonitorEntry
+from django_monitor.models import MonitorEntry
 
 def moderate_selected(modeladmin, request, queryset, status):
     """

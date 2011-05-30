@@ -7,16 +7,16 @@ from django.utils.functional import update_wrapper
 from django.template import RequestContext
 from django.utils.safestring import mark_safe
 
-from monitor.actions import (
+from django_monitor.actions import (
     approve_selected, challenge_selected, reset_to_pending
 )
-from monitor.filter import MonitorFilter
-from monitor import model_from_queue, queued_models
-from monitor.conf import (
+from django_monitor.filter import MonitorFilter
+from django_monitor import model_from_queue, queued_models
+from django_monitor.conf import (
     PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS,
     PENDING_DESCR, CHALLENGED_DESCR
 )
-from monitor.models import MonitorEntry
+from django_monitor.models import MonitorEntry
 
 # Our objective is to place the custom monitor-filter on top
 FilterSpec.filter_specs.insert(
@@ -31,7 +31,7 @@ class MEAdmin(admin.ModelAdmin):
     behind the curtain. This admin class is to provide a single stop for users
     to get notified about pending/challenged model objects.
     """
-    change_list_template = 'admin/monitor/monitorentry/change_list.html'
+    change_list_template = 'admin/django_monitor/monitorentry/change_list.html'
 
     def get_urls(self):
         """ The only url allowed is that for changelist_view. """
@@ -60,7 +60,7 @@ class MEAdmin(admin.ModelAdmin):
         """
         Users will be lead to the moderation summary page when they click on
         the link for changelist, which has a url like,
-        ``/admin/monitor/monitorentry/``. The admin site index page will show
+        ``/admin/django_monitor/monitorentry/``. The admin site index page will show
         the link to user, only if they have change_permission. So lets grant
         that perm to all admin-users.
         """

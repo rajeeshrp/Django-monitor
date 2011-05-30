@@ -1,7 +1,7 @@
 from django.contrib.admin.filterspecs import ChoicesFilterSpec
 from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
-from monitor.conf import STATUS_DICT
+from django_monitor.conf import STATUS_DICT
 
 class MonitorFilter(ChoicesFilterSpec):
     """

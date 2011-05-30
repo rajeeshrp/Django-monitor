@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib import admin
-import monitor
+import django_monitor
 
 class Author(models.Model):
     """ Moderated model """
@@ -13,7 +13,7 @@ class Author(models.Model):
     def __unicode__(self):
         return self.name
 
-monitor.nq(Author)
+django_monitor.nq(Author)
 
 class Publisher(models.Model):
     """ Not moderated model """
@@ -44,13 +44,13 @@ class Book(models.Model):
     def __unicode__(self):
         return self.name
 
-monitor.nq(Book, ['supplements', ])
+django_monitor.nq(Book, ['supplements', ])
 
 class EBook(Book):
     """ Subclassing a moderated model """
     pass
 
-monitor.nq(EBook, ['supplements', ])
+django_monitor.nq(EBook, ['supplements', ])
 
 class Supplement(models.Model):
     """ Objects of this model get moderated along with Book"""
@@ -60,5 +60,5 @@ class Supplement(models.Model):
     def __unicode__(self):
         return 'Supplement %s to %s' % (self.serial_num, self.book)
 
-monitor.nq(Supplement)
+django_monitor.nq(Supplement)
 

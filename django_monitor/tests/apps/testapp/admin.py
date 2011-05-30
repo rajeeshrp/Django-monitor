@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from monitor.tests.apps.testapp.models import (
+from django_monitor.tests.apps.testapp.models import (
     Author, Book, EBook, Supplement, Publisher
 )
-from monitor.admin import MonitorAdmin
+from django_monitor.admin import MonitorAdmin
 
 class AuthorAdmin(MonitorAdmin):
     """ Monitored model. So the admin inherited from MonitorAdmin."""

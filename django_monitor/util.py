@@ -4,9 +4,9 @@ from datetime import datetime
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Manager
 
-from monitor.middleware import get_current_user
-from monitor.models import MonitorEntry, MONITOR_TABLE
-from monitor.conf import (
+from django_monitor.middleware import get_current_user
+from django_monitor.models import MonitorEntry, MONITOR_TABLE
+from django_monitor.conf import (
     STATUS_DICT, PENDING_STATUS, APPROVED_STATUS, CHALLENGED_STATUS
 )
 
@@ -14,7 +14,7 @@ def create_moderate_perms(app, created_models, verbosity, **kwargs):
     """ This will create moderate permissions for all registered models"""
     from django.contrib.auth.models import Permission
 
-    from monitor import queued_models
+    from django_monitor import queued_models
 
     for model in queued_models():
         ctype = ContentType.objects.get_for_model(model)
@@ -128,11 +128,11 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
 
     def moderate(self, status, user = None, notes = ''):
         """ developers may use this to moderate objects """
-        import monitor
+        import django_monitor
         getattr(self, monitor_name).moderate(status, user, notes)
         # Auto-Moderate parents also
         monitored_parents = filter(
-            lambda x: monitor.model_from_queue(x),
+            lambda x: django_monitor.model_from_queue(x),
             self._meta.parents.keys()
         )
         for parent in monitored_parents:
@@ -181,7 +181,7 @@ def add_fields(cls, manager_name, status_name, monitor_name, base_manager):
     cls.add_to_class('is_approved', property(is_approved))
     cls.add_to_class('is_challenged', property(is_challenged))
     cls.add_to_class('is_pending', property(is_pending))
-    # We have a custom filter defined in monitor.filter to enable
+    # We have a custom filter defined in django_monitor.filter to enable
     # filtering of model objects by their moderation status.
     # But `status` is not a real field and Django does not support filters
     # on non-fields as of now. Our way out is to attach the filter to some
@@ -202,7 +202,7 @@ def save_handler(sender, instance, **kwargs):
     2. Auto-approves object, its parents & specified related objects if user 
        has ``moderate`` permission. Otherwise, they are put in pending.
     """
-    import monitor
+    import django_monitor
     # Auto-moderation
     user = get_current_user()
     opts = instance.__class__._meta
@@ -224,7 +224,7 @@ def save_handler(sender, instance, **kwargs):
 
         # Create one monitor_entry per moderated parent.
         monitored_parents = filter(
-            lambda x: monitor.model_from_queue(x),
+            lambda x: django_monitor.model_from_queue(x),
             instance._meta.parents.keys()
         )
         for parent in monitored_parents:
@@ -242,7 +242,7 @@ def save_handler(sender, instance, **kwargs):
             me.moderate(status, user)
 
         # Moderate related objects too... 
-        model = monitor.model_from_queue(instance.__class__)
+        model = django_monitor.model_from_queue(instance.__class__)
         if model:
             for rel_name in model['rel_fields']:
                 rel_obj = getattr(instance, rel_name, None)
@@ -255,7 +255,7 @@ def moderate_rel_objects(given, status, user = None):
     object(s) and all specified related objects.
     TODO: Permissions must be checked before each iteration.
     """
-    from monitor import model_from_queue
+    from django_monitor import model_from_queue
     # Not sure how we can find whether `given` is a queryset or object.
     # Now assume `given` is a queryset/related_manager if it has 'all'
     if not given:
@@ -282,7 +282,7 @@ def moderate_rel_objects(given, status, user = None):
 
 def delete_handler(sender, instance, **kwargs):
     """ When an instance is deleted, delete corresponding monitor_entries too"""
-    from monitor import model_from_queue
+    from django_monitor import model_from_queue
     if model_from_queue(sender):
         me = MonitorEntry.objects.get_for_instance(instance)
         if me:

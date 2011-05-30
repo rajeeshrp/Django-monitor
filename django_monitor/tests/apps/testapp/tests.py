@@ -5,9 +5,11 @@ from django.test import TestCase
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from monitor.conf import PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS
-from monitor.tests.utils.testsettingsmanager import SettingsTestCase
-from monitor.tests.apps.testapp.models import (
+from django_monitor.conf import (
+    PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS
+)
+from django_monitor.tests.utils.testsettingsmanager import SettingsTestCase
+from django_monitor.tests.apps.testapp.models import (
     Author, Book, EBook, Supplement, Publisher
 )
 
@@ -26,7 +28,7 @@ def moderate_perm_exists(Model):
 
 class ModPermTest(SettingsTestCase):
     """ Make sure that moderate permissions are created for required models."""
-    test_settings = 'monitor.tests.settings'
+    test_settings = 'django_monitor.tests.settings'
 
     def test_perms_for_author(self):
         """ Testing moderate_perm exists for Author..."""
@@ -47,7 +49,7 @@ class ModPermTest(SettingsTestCase):
 class ModTest(SettingsTestCase):
     """ Testing Moderation facility """
     fixtures = ['test_monitor.json']
-    test_settings = 'monitor.tests.settings'
+    test_settings = 'django_monitor.tests.settings'
 
     def get_csrf_token(self, url):
         """ Scrape CSRF token """
@@ -100,8 +102,8 @@ class ModTest(SettingsTestCase):
         monitor puts some additional attrs to each moderated class.
         Let's check for their existence.
         """
-        import monitor
-        qd_book = monitor.model_from_queue(Book)
+        import django_monitor
+        qd_book = django_monitor.model_from_queue(Book)
         monitor_name = qd_book['monitor_name']
         status_name = qd_book['status_name']
         self.assertEquals(hasattr(Book, monitor_name), True) 
@@ -116,7 +118,9 @@ class ModTest(SettingsTestCase):
         self.assertEquals(hasattr(Book, 'is_challenged'), True)
         self.assertEquals(hasattr(Book, 'is_pending'), True)
         # monitor has changed the default manager, ``objects`` too.
-        self.assertEquals(str(Book.objects)[:27], '<monitor.util.CustomManager')
+        self.assertEquals(
+            str(Book.objects)[:34], '<django_monitor.util.CustomManager'
+        )
 
     def test_2_moderation(self):
         """ 
@@ -293,7 +297,7 @@ class ModTest(SettingsTestCase):
         corresponding to the instance and all of its parent instances also
         should be deleted.
         """
-        from monitor.models import MonitorEntry
+        from django_monitor.models import MonitorEntry
 
         self.assertEquals(MonitorEntry.objects.count(), 0)
         ebook_ct = ContentType.objects.get_for_model(EBook)

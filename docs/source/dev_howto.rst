@@ -8,19 +8,20 @@ How to use (for developers)
 Registration (Enqueue)
 ======================
 
-Register the model for moderation using ``monitor.nq``.
+Register the model for moderation using ``django_monitor.nq``.
 
 **Example** ::
 
-    import monitor
+    import django_monitor
     # Your model here
-    monitor.nq(YOUR_MODEL)
+    django_monitor.nq(YOUR_MODEL)
 
 The full signature is... ::
 
-    monitor.nq(
-        model, [rel_fields=[], can_delete_approved=True, manager_name='objects',
-        status_name='status', monitor_name='monitor_entry', base_manager=None]
+    django_monitor.nq(
+        model, [rel_fields = [], can_delete_approved = True,
+        manager_name = 'objects', status_name = 'status',
+        monitor_name = 'monitor_entry', base_manager = None]
     )
 
 ``model`` is the only required argument. Other optional arguments follow:
@@ -58,7 +59,7 @@ django's built-in ``ModelAdmin``. Always remember to inherit from
 ::
 
     # in your admin.py
-    from monitor.admin import MonitorAdmin
+    from django_monitor.admin import MonitorAdmin
     class YourModelAdmin(MonitorAdmin):
         pass
 
@@ -84,8 +85,8 @@ and so they too can be approved along with it. See the **example**: ::
         name = models.CharField(max_length = 100)
         book = models.ForeignKey(Book, related_name = 'supplements')
 
-    monitor.nq(Book, rel_fields = ['supplements'])
-    monitor.nq(Supplement)
+    django_monitor.nq(Book, rel_fields = ['supplements'])
+    django_monitor.nq(Supplement)
 
 Remember that both models should be put in moderation queue.
 
@@ -106,11 +107,12 @@ would do with ``readonly_fields``. See the **example** below: ::
     class YourModelAdmin(MonitorAdmin):
         protected_fields = ['field1', 'field2']
 
-``can_delete_approved`` is an optional parameter you pass to ``monitor.nq``.
-Its default value is ``True`` which allows users to delete all objects. If this
-is set to ``False``, admin-user can not delete an object once it is approved.
-Deleting either un-moderated or pending/challenged objects can be done as usual.
-You still can delete approved objects by code or from the django-shell.
+``can_delete_approved`` is an optional parameter you pass to 
+``django_monitor.nq``. Its default value is ``True`` which allows users to
+delete all objects. If this is set to ``False``, admin-user can not delete
+an object once it is approved. Deleting either un-moderated or pending or
+challenged objects can be done as usual. You still can delete approved
+objects by code or from the django-shell.
 
 Creation of objects by code
 ============================
@@ -125,7 +127,7 @@ them by code using the following public methods of the moderated model:
    ``user`` is an optional parameter in all those methods described below.
    Please pass the current user to the methods in all possible cases.
    ``request.user`` can be used for this whenever ``request`` is available.
-   Otherwise, you can use ``get_current_user`` from ``monitor.middleware``.
+   Otherwise, use the function, ``django_monitor.middleware.get_current_user``.
 
 #. approve:
     ::
@@ -179,7 +181,7 @@ Post-moderation hook
 If you want to perform something after an object is moderated, you can make use
 of the ``post_moderation`` signal as in the below **example**: ::
 
-    from monitor import post_moderation
+    from django_monitor import post_moderation
 
     # handler_func: function to handle your post moderation activities.
     def handler_func(sender, instance, **kwargs):

@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 import datetime
 
-from monitor.conf import (
+from django_monitor.conf import (
     STATUS_DICT, PENDING_STATUS, APPROVED_STATUS, CHALLENGED_STATUS
 )
 STATUS_CHOICES = STATUS_DICT.items()
@@ -37,7 +37,7 @@ class MonitorEntry(models.Model):
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     class Meta:
-        app_label = 'monitor'
+        app_label = 'django_monitor'
         verbose_name = 'moderation Queue'
         verbose_name_plural = 'moderation Queue'
 
@@ -49,7 +49,7 @@ class MonitorEntry(models.Model):
             return self.content_object.get_absolute_url()
 
     def _moderate(self, status, user, notes = ''):
-        from monitor import post_moderation
+        from django_monitor import post_moderation
         self.status = status
         self.status_by = user
         self.status_date = datetime.datetime.now()

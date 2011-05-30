@@ -7,7 +7,7 @@ from django.dispatch import Signal
 from django.db.models import signals
 from django.db.models.loading import get_model
 
-from monitor.util import (
+from django_monitor.util import (
     create_moderate_perms, add_fields, save_handler, delete_handler
 )
 

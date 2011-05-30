@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-from monitor import __version__ as version, __author__ as author 
+from django_monitor import __version__ as version, __author__ as author
 
 setup(
     name = 'django-monitor',
@@ -25,8 +25,8 @@ setup(
     author_email = 'rajeeshrnair@gmail.com',
     url = 'http://bitbucket.org/rajeesh/django-monitor',
     license = 'BSD',
-    packages = find_packages('monitor'),
-    package_dir = {'': 'monitor'},
+    packages = find_packages('django_monitor'),
+    package_dir = {'': 'django_monitor'},
     include_package_data = True,
     zip_safe = True,
 )

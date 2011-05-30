@@ -28,9 +28,9 @@ Installation
 * Download the latest version from the bitbucket repo:
   http://bitbucket.org/rajeesh/django-monitor.
 
-* Copy the ``monitor`` directory to some place in your python path.
+* Copy the ``django_monitor`` directory to some place in your python path.
 
-* Add to your django project by including 'monitor' in settings.INSTALLED_APPS.
+* Add 'django_monitor' to your project's ``settings.INSTALLED_APPS``.
 
 Features
 =========
@@ -73,17 +73,17 @@ Basic usage (developers)
 
   **Example**: ::
 
-    import monitor
+    import django_monitor
     from django.db import models
     class MyModel(models.Model):
         pass
 
-    monitor.nq(MyModel)
+    django_monitor.nq(MyModel)
 
 * Inherit ``MonitorAdmin``, not ``ModelAdmin`` for moderated models. ::
 
     # in your admin.py
-    from monitor.admin import MonitorAdmin
+    from django_monitor.admin import MonitorAdmin
     class MyAdmin(MonitorAdmin):
         pass
 
