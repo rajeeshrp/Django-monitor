@@ -2,6 +2,33 @@
 Django-monitor: CHANGE LOG
 ==========================
 
+0.2
+====
+
+Through the changesets from 18 to 23, we have introduced the following changes
+to Django-monitor.
+
+* BUGFIX: setup.py was not working thanks to some typos and syntax errors. Fixed.
+
+* The directory, ``docs/build`` contained documentation in html format.
+  Since we can build it any time using sphinx, it is removed from the
+  revision control. Now our package contains the documentation in
+  reStructuredText format only (within ``docs/source``).
+
+* When you create an instance of a model which in turn is a sub-class of
+  another non-abstract model, django creates a parent instance which stores
+  the data that belongs to the parent model. The child instance stores a
+  reference to it plus all additional data. Now django_monitor automatically
+  moderates such parent instances also.
+
+* Auto-deletion: When you delete a moderated model instance, corresponding
+  monitor entries also get deleted. This includes those monitor entries for
+  parent instances as well.
+
+* Though the project name is ``django_monitor``, our source directory was named
+  as `monitor` till 0.1.5. This may lead to failed dependencies for other apps
+  which depend on this. Now we have renamed the directory as `django_monitor`.
+
 0.1.5
 ======
 
