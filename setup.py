@@ -1,11 +1,8 @@
 from setuptools import setup, find_packages
-import os
-
-from django_monitor import __version__ as version, __author__ as author
 
 setup(
     name = 'django-monitor',
-    version = version,
+    version = "0.2a",
     description = "Django app to moderate model objects",
     long_description = open("README.rst").read(),
     install_requires = [
@@ -21,12 +18,11 @@ setup(
         'Framework :: Django',
     ],
     keywords = 'django moderation models',
-    author = author,
+    author = "Rajeesh Nair",
     author_email = 'rajeeshrnair@gmail.com',
     url = 'http://bitbucket.org/rajeesh/django-monitor',
     license = 'BSD',
-    packages = find_packages('django_monitor'),
-    package_dir = {'': 'django_monitor'},
+    packages = find_packages(),
     include_package_data = True,
     zip_safe = True,
 )

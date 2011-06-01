@@ -28,7 +28,11 @@ Installation
 * Download the latest version from the bitbucket repo:
   http://bitbucket.org/rajeesh/django-monitor.
 
-* Copy the ``django_monitor`` directory to some place in your python path.
+* Install using the setuptools as given below: ::
+
+    $ python setup.py install
+
+* Or copy the ``django_monitor`` directory to some place in your python path.
 
 * Add 'django_monitor' to your project's ``settings.INSTALLED_APPS``.
 

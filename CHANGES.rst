@@ -8,7 +8,7 @@ Django-monitor: CHANGE LOG
 Through the changesets from 18 to 23, we have introduced the following changes
 to Django-monitor.
 
-* BUGFIX: setup.py was not working thanks to some typos and syntax errors. Fixed.
+* BUGFIX: ``setup.py`` was not working as expected. Fixed.
 
 * The directory, ``docs/build`` contained documentation in html format.
   Since we can build it any time using sphinx, it is removed from the
