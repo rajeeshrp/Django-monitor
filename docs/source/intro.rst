@@ -14,23 +14,35 @@ About
 
 Moderation seems to be some job each one want to do in their own way.
 Django-monitor is a django-app to moderate model objects. It was started as
-a clone of the `django-gatekeeper` project but with a different set of
-requirements. The name ``monitor`` is just to distinguish it from an existing
-project, `django-moderation`. (The terms, ``monitor`` and ``moderate`` are used
-with same meaning everywhere in the source.)
+a clone of the `django-gatekeeper` project but to meet a different set of
+business requirements.
+
+*The terms, ``monitor`` and ``moderate`` are used with same meaning everywhere
+in the source.*
 
 Here, the moderation process is well integrated with django-admin. That is,
 all moderation actvities are performed from within the changelist page itself.
 
-Install
-========
+Installation
+=============
 
-* Download the latest version from bitbucket repo:
-  http://bitbucket.org/rajeesh/django-monitor.
+#. Directly from the python package index: ::
 
-* Copy the ``monitor`` directory to some place in your python path.
+   $ pip install django_monitor
 
-* Add to your django project by including it in settings.INSTALLED_APPS.
+#. Or Download & install as instructed below:
+
+   * Get the latest version from the bitbucket repo:
+     http://bitbucket.org/rajeesh/django-monitor.
+
+   * Install using the setuptools as given below: ::
+
+      $ python setup.py install
+
+   * If setuptools is not installed, you may copy the ``django_monitor``
+     directory to somewhere in your python path.
+
+#. Add 'django_monitor' to your project's ``settings.INSTALLED_APPS``.
 
 Features
 =========

@@ -10,31 +10,41 @@ About
 =====
 
 Moderation seems to be some job each one want to do in their own way.
-Django-monitor is a django-app to moderate model objects. It was started as
-a clone of `django-gatekeeper` project but with some different set of
-requirements.The name ``monitor`` is just to distinguish it from an existing
-project, `django-moderation`. (The terms, ``monitor`` and ``moderate`` are used
-with same meaning everywhere in the source.)
+Django-monitor is a django-app to moderate model objects. It was started as a
+clone of `django-gatekeeper` project but to meet certain business requirements.
+Read about those requirements it meet in the ``Features`` section.
 
 Here, the moderation process is well integrated with django-admin. That is, all
 moderation actvities are performed from within the changelist page itself.
 
-The detailed documentation is available at http://django-monitor.readthedocs.org/
-and in the ``docs/`` directory inside the source path.
+The detailed documentation is available at the following locations:
+
+* http://django-monitor.readthedocs.org/
+
+* http://packages.python.org/django-monitor
+
+* Within the ``docs/source/`` directory inside the source path.
 
 Installation
 ============
 
-* Download the latest version from the bitbucket repo:
-  http://bitbucket.org/rajeesh/django-monitor.
+#. Directly from the python package index: ::
 
-* Install using the setuptools as given below: ::
+   $ pip install django_monitor
 
-    $ python setup.py install
+#. Or Download & install as instructed below:
 
-* Or copy the ``django_monitor`` directory to some place in your python path.
+   * Get the latest version from the bitbucket repo:
+     http://bitbucket.org/rajeesh/django-monitor.
 
-* Add 'django_monitor' to your project's ``settings.INSTALLED_APPS``.
+   * Install using the setuptools as given below: ::
+
+      $ python setup.py install
+
+   * If setuptools is not installed, you may copy the ``django_monitor``
+     directory to somewhere in your python path.
+
+#. Add 'django_monitor' to your project's ``settings.INSTALLED_APPS``.
 
 Features
 =========
@@ -94,6 +104,5 @@ Basic usage (developers)
     from django.contrib import admin
     admin.site.register(MyModel, MyAdmin)
 
-More details at http://django-monitor.readthedocs.org. Or check the `docs/`
-directory inside the source path, if you are working offline.
+More details given at the documentation locations mentioned above.
 
