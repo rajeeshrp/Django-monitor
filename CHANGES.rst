@@ -5,8 +5,10 @@ Django-monitor: CHANGE LOG
 0.2
 ====
 
-Through the changesets from 18 to 23, we have introduced the following changes
+Through the changesets from 18 to 28, we have introduced the following changes
 to Django-monitor.
+
+* This app is now available over python applications index, pypi.python.org.
 
 * BUGFIX: ``setup.py`` was not working as expected. Fixed.
 
