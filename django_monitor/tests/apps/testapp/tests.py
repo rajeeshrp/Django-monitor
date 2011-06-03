@@ -330,3 +330,18 @@ class ModTest(SettingsTestCase):
         self.assertEquals(ebook_mes.count(), 0)
         self.assertEquals(book_mes.count(), 0) 
 
+    def test_6_moderation_signal(self):
+        """
+        Make sure that a post_moderation signal is emitted.
+        We have an attribute, `signal_emitted` in the model, ``Author``.
+        By default, it will be set to False. When a ``post_moderation`` signal
+        is emitted, a function, ``auth_post_moderation_handler`` defined in
+        testapp.models will set it to True.
+        """
+        auth1 = Author.objects.create(
+            name = "test_auth", age = 34
+        )
+        # Creation itself invokes moderation which in turn emits the signal.
+        auth1 = Author.objects.get(pk=1)
+        self.assertEquals(auth1.signal_emitted, True)
+

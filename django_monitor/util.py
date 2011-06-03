@@ -216,11 +216,12 @@ def save_handler(sender, instance, **kwargs):
 
     # Create corresponding monitor entry
     if kwargs.get('created', None):
-        MonitorEntry.objects.create(
-            status = status, status_by = user,
+        me = MonitorEntry.objects.create(
+            status = status,
             content_object = instance,
             timestamp = datetime.now()
         )
+        me.moderate(status, user)
 
         # Create one monitor_entry per moderated parent.
         monitored_parents = filter(

@@ -6,6 +6,8 @@ class Author(models.Model):
     """ Moderated model """
     name = models.CharField(max_length = 100)
     age = models.IntegerField()
+    # To make sure that post_moderation signal is emitted.
+    signal_emitted = models.BooleanField(editable = False, default = False)
 
     class Meta:
         app_label = 'testapp'
@@ -13,7 +15,22 @@ class Author(models.Model):
     def __unicode__(self):
         return self.name
 
+    def collect_signal(self):
+        """Registers the emission of post_moderation signals"""
+        self.signal_emitted = True
+        self.save()
+
 django_monitor.nq(Author)
+
+def auth_moderation_handler(sender, instance, **kwargs):
+    """
+    Receives the post_moderation signal from Author & passes it to the instance
+    """
+    instance.collect_signal()
+
+django_monitor.post_moderation.connect(
+    auth_moderation_handler, sender = Author
+)
 
 class Publisher(models.Model):
     """ Not moderated model """
