@@ -1,2 +1,4 @@
 recursive-include docs *
+recursive-include django_monitor/templates *
 include README.rst LICENSE CHANGES.rst
+exclude *~
