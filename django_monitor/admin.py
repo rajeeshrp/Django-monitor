@@ -73,13 +73,22 @@ class MEAdmin(admin.ModelAdmin):
         The 'change list' admin view is overridden to return a page showing the
         moderation summary aggregated for each model.
         """
-        query_set = self.queryset(request)
         model_list = []
         for model in queued_models():
-            c_type = ContentType.objects.get_for_model(model)
-            q_set = query_set.filter(content_type = c_type)
-            ip_count = q_set.filter(status = PENDING_STATUS).count()
-            ch_count = q_set.filter(status = CHALLENGED_STATUS).count() 
+            # I do not like to access private objects. No other option here!
+            # Get only those objects developer wish to let user see..
+            try:
+                model_admin = self.admin_site._registry[model]
+            except KeyError:
+                # This may happen at test-time. There the ``queued_models``
+                # come from the project where the test is actually being run
+                # but the admin_site registry knows only those models in
+                # ``django_monitor.tests.apps.testapp.models``.
+                continue
+
+            ip_count = model_admin.queryset(request).pending().count()
+            ch_count = model_admin.queryset(request).challenged().count()
+
             app_label = model._meta.app_label
             if ip_count or ch_count:
                 model_list.append({

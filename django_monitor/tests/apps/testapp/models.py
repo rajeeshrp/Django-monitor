@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib import admin
+from django.contrib.auth.models import User
+
 import django_monitor
 
 class Author(models.Model):
@@ -78,4 +80,11 @@ class Supplement(models.Model):
         return 'Supplement %s to %s' % (self.serial_num, self.book)
 
 django_monitor.nq(Supplement)
+
+class Reader(models.Model):
+    """ To test an issue with custom querysets. See admin & tests """
+    name = models.CharField(max_length = 100)
+    user = models.ForeignKey(User)
+
+django_monitor.nq(Reader)
 

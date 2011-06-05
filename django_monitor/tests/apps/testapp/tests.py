@@ -8,9 +8,10 @@ from django.contrib.contenttypes.models import ContentType
 from django_monitor.conf import (
     PENDING_STATUS, CHALLENGED_STATUS, APPROVED_STATUS
 )
+from django_monitor.models import MonitorEntry
 from django_monitor.tests.utils.testsettingsmanager import SettingsTestCase
 from django_monitor.tests.apps.testapp.models import (
-    Author, Book, EBook, Supplement, Publisher
+    Author, Book, EBook, Supplement, Publisher, Reader
 )
 
 def get_perm(Model, perm):
@@ -71,13 +72,16 @@ class ModTest(SettingsTestCase):
         mod_ebk_perm = get_perm(EBook, 'moderate_ebook')
         add_sup_perm = get_perm(Supplement, 'add_supplement')
         mod_sup_perm = get_perm(Supplement, 'moderate_supplement')
+        ch_reader_perm = get_perm(Reader, 'change_reader')
+        ch_me_perm = get_perm(MonitorEntry, 'change_monitorentry')
 
         self.adder = User.objects.create_user(
             username = 'adder', email = 'adder@monitor.com',
             password = 'adder'
         )
         self.adder.user_permissions = [
-            add_auth_perm, add_bk_perm, add_ebk_perm, add_sup_perm, ch_auth_perm
+            add_auth_perm, add_bk_perm, add_ebk_perm, add_sup_perm,
+            ch_auth_perm, ch_reader_perm, ch_me_perm
         ]
         self.adder.is_staff = True
         self.adder.save()
@@ -88,7 +92,7 @@ class ModTest(SettingsTestCase):
         self.moderator.user_permissions = [
             add_auth_perm, add_bk_perm, add_ebk_perm, add_sup_perm,
             mod_auth_perm, mod_bk_perm, mod_ebk_perm, mod_sup_perm,
-            ch_auth_perm, ch_bk_perm, ch_ebk_perm
+            ch_auth_perm, ch_bk_perm, ch_ebk_perm, ch_reader_perm, ch_me_perm
         ]
         self.moderator.is_staff = True
         self.moderator.save()
@@ -345,3 +349,53 @@ class ModTest(SettingsTestCase):
         auth1 = Author.objects.get(pk=1)
         self.assertEquals(auth1.signal_emitted, True)
 
+    def test_7_moderation_queue_count(self):
+        """
+        moderation queue counts all pending or challenged objects of each
+        monitored model and displays those counts in the changelist. The
+        developer may have written some of the model_admins in a way that a
+        user is able to view only a subset of all objects. eg, only those
+        objects the user has created herself. Our queue should respect such
+        customizations. So the counts must be prepared only after consulting
+        the model_admin.queryset.
+        """
+        reader1 = Reader.objects.create(name = 'r1', user = self.adder)
+        reader2 = Reader.objects.create(name = 'r2', user = self.adder)
+        reader3 = Reader.objects.create(name = 'r3', user = self.moderator)
+        reader4 = Reader.objects.create(name = 'r4', user = self.moderator)
+        reader5 = Reader.objects.create(name = 'r5', user = self.moderator)
+        # User 1, adder logs in
+        logged_in = self.client.login(username = 'adder', password = 'adder')
+        self.assertEquals(logged_in, True)
+        # model_admin allows user to view just 2 objects that belong to her.
+        response = self.client.get('/admin/testapp/reader/', follow = True)
+        self.assertEquals(response.status_code, 200)
+        result_count = len(response.context[-1]['cl'].result_list)
+        self.assertEquals(result_count, 2)
+        # Now is the time to test monitor_queue. Same result expected.
+        response = self.client.get(
+            '/admin/django_monitor/monitorentry/', follow = True
+        )
+        self.assertEquals(response.status_code, 200)
+        queued_reader = filter(
+            lambda x: x['model_name'] == 'reader',
+            response.context[-1]['model_list']
+        )[0]
+        self.assertEquals(queued_reader['pending'], 2)
+        self.assertEquals(queued_reader['challenged'], 0)
+        self.client.logout()
+
+        # User 2, moderator, repeats the same.
+        logged_in = self.client.login(username = 'moder', password = 'moder')
+        self.assertEquals(logged_in, True)
+        response = self.client.get(
+            '/admin/django_monitor/monitorentry/', follow = True
+        )
+        self.assertEquals(response.status_code, 200)
+        queued_reader = filter(
+            lambda x: x['model_name'] == 'reader',
+            response.context[-1]['model_list']
+        )[0]
+        self.assertEquals(queued_reader['pending'], 3)
+        self.assertEquals(queued_reader['challenged'], 0)
+        self.client.logout()
