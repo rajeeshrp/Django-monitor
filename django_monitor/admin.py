@@ -138,7 +138,7 @@ class MonitorAdmin(admin.ModelAdmin):
         status = request.GET.get('status', None)
         # status is not among list_filter entries. So its presence will raise
         # IncorrectLookupParameters when django tries to build-up changelist.
-        # We no longer need that param after leaving here. So let's remove it.
+        # So let's remove it from GET dict (Still available in the url.)
         if status:
             get_dict = request.GET.copy()
             del get_dict['status']
