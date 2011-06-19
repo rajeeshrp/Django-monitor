@@ -2,14 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'django-monitor',
-    version = "0.2a",
+    version = "0.2b",
     description = "Django app to moderate model objects",
     long_description = open("README.rst").read(),
     install_requires = [
         "django >= 1.1",
     ],
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',

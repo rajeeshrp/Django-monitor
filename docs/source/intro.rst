@@ -26,23 +26,40 @@ all moderation actvities are performed from within the changelist page itself.
 Installation
 =============
 
-#. Directly from the python package index: ::
+#. Directly from the python package index
 
-   $ pip install django_monitor
+   #. Using pip: ::
 
-#. Or Download & install as instructed below:
+        $ pip install django_monitor
 
-   * Get the latest version from the bitbucket repo:
-     http://bitbucket.org/rajeesh/django-monitor.
+   #. Using easy_install: ::
+
+        $ easy_install django_monitor
+
+#. OR Directly from the mercurial repo
+
+    #. Clone the repo (if you have hg installed): ::
+
+        $ hg clone http://bitbucket.org/rajeesh/django-monitor/
+
+#. OR Download & install from available archives
+
+   * Get the archive from any of the following locations:
+
+     + http://bitbucket.org/rajeesh/django-monitor/downloads
+
+     + http://pypi.python.org/pypi/django-monitor#downloads
 
    * Install using the setuptools as given below: ::
 
-      $ python setup.py install
+        $ tar xzf django-monitor-xxx.tar.gz
+        $ cd django-monitor-xxx
+        $ python setup.py install
 
    * If setuptools is not installed, you may copy the ``django_monitor``
      directory to somewhere in your python path.
 
-#. Add 'django_monitor' to your project's ``settings.INSTALLED_APPS``.
+#. Then add 'django_monitor' to your project's ``settings.INSTALLED_APPS``.
 
 Features
 =========

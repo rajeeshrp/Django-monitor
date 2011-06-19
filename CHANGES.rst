@@ -8,7 +8,7 @@ Django-monitor: CHANGE LOG
 Through the changesets from 18 to 28, we have introduced the following changes
 to Django-monitor.
 
-* BUGFIX: Fixed issues upto #3.
+* BUGFIX: Fixed issues upto #4. (Refer to the issues section at bitbucket).
 
 * This app is now available over python applications index, pypi.python.org.
 
