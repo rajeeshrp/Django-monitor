@@ -17,13 +17,18 @@ Read about those requirements it meet in the ``Features`` section.
 Here, the moderation process is well integrated with django-admin. That is, all
 moderation actvities are performed from within the changelist page itself.
 
-The detailed documentation is available at the following locations:
+The detailed documentation for latest revision is available at: 
 
-* http://django-monitor.readthedocs.org/
-
-* http://packages.python.org/django-monitor
+* http://django-monitor.readthedocs.org
 
 * Within the ``docs/source/`` directory inside the source path.
+
+Requirements
+============
+
+* Python >= 2.4
+
+* Django >= 1.1
 
 Installation
 ============
@@ -100,7 +105,7 @@ client's business requires that.
 Basic usage (developers)
 ========================
 
-* Register the model for moderation using ``monitor.nq``.
+* Register the model for moderation using ``django_monitor.nq``.
 
   **Example**: ::
 
@@ -120,6 +125,11 @@ Basic usage (developers)
 
     from django.contrib import admin
     admin.site.register(MyModel, MyAdmin)
+
+.. note::
+
+   Django-monitor can not bring existing model instances under moderation.
+   So, enqueue the model first and then only create model instances.
 
 More details given at the documentation locations mentioned above.
 
