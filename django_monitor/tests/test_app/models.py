@@ -11,9 +11,6 @@ class Author(models.Model):
     # To make sure that post_moderation signal is emitted.
     signal_emitted = models.BooleanField(editable = False, default = False)
 
-    class Meta:
-        app_label = 'testapp'
-
     def __unicode__(self):
         return self.name
 
@@ -39,9 +36,6 @@ class Publisher(models.Model):
     name = models.CharField(max_length = 255)
     num_awards = models.IntegerField()
 
-    class Meta:
-        app_label = 'testapp'
-
     def __unicode__(self):
         return self.name
 
@@ -57,9 +51,6 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author)
     publisher = models.ForeignKey(Publisher)
     
-    class Meta:
-        app_label = 'testapp'
-
     def __unicode__(self):
         return self.name
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from django_monitor.tests.apps.testapp.models import (
+from django_monitor.tests.test_app.models import (
     Author, Book, EBook, Supplement, Publisher, Reader
 )
 from django_monitor.admin import MonitorAdmin

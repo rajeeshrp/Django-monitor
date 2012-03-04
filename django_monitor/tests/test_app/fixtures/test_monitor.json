@@ -1,7 +1,7 @@
 [
     {
         "pk": 1,
-        "model": "testapp.publisher",
+        "model": "test_app.publisher",
         "fields": {
             "name": "Apress",
             "num_awards": 3
@@ -9,7 +9,7 @@
     },
     {
         "pk": 2,
-        "model": "testapp.publisher",
+        "model": "test_app.publisher",
         "fields": {
             "name": "Sams",
             "num_awards": 1
@@ -17,7 +17,7 @@
     },
     {
         "pk": 3,
-        "model": "testapp.publisher",
+        "model": "test_app.publisher",
         "fields": {
             "name": "Prentice Hall",
             "num_awards": 7
@@ -25,7 +25,7 @@
     },
     {
         "pk": 4,
-        "model": "testapp.publisher",
+        "model": "test_app.publisher",
         "fields": {
             "name": "Morgan Kaufmann",
             "num_awards": 9
@@ -33,7 +33,7 @@
     },
     {
         "pk": 5,
-        "model": "testapp.publisher",
+        "model": "test_app.publisher",
         "fields": {
             "name": "Jonno's House of Books",
             "num_awards": 0
