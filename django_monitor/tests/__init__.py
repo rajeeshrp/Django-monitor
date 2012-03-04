@@ -1,3 +1,3 @@
 
-from .apps.testapp.tests import *
+from .tests import *
 
