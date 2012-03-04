@@ -5,33 +5,23 @@ Django-monitor: CHANGE LOG
 0.2
 ====
 
-Through the changesets from 18 to 28, we have introduced the following changes
-to Django-monitor.
+The following changes are there in **Django_monitor 0.2**:
 
-* BUGFIX: Fixed issues upto #4. (Refer to the issues section at bitbucket).
+* It lets you sub-class moderated models.
 
-* This app is now available over python applications index, pypi.python.org.
+* When you delete an instance of a moderated model, the corresponding 
+  monitor-entry automatically gets deleted.
 
-* BUGFIX: ``setup.py`` was not working as expected. Fixed.
+* The admin-changelist correctly shows you the selected status in the
+  moderation status filter.
 
-* The directory, ``docs/build`` contained documentation in html format.
-  Since we can build it any time using sphinx, it is removed from the
-  revision control. Now our package contains the documentation in
-  reStructuredText format only (within ``docs/source``).
+* The Moderation Queue shows the exact number of pending/challenged objects
+  the current user can view. So if you have customized the ModelAdmin.queryset
+  method for any model, the queue will take that into consideration.
 
-* When you create an instance of a model which in turn is a sub-class of
-  another non-abstract model, django creates a parent instance which stores
-  the data that belongs to the parent model. The child instance stores a
-  reference to it plus all additional data. Now django_monitor automatically
-  moderates such parent instances also.
-
-* Auto-deletion: When you delete a moderated model instance, corresponding
-  monitor entries also get deleted. This includes those monitor entries for
-  parent instances as well.
-
-* Though the project name is ``django_monitor``, our source directory was named
-  as `monitor` till 0.1.5. This may lead to failed dependencies for other apps
-  which depend on this. Now we have renamed the directory as `django_monitor`.
+* Fixed ``setup.py`` and added ``runtests.py``. The latter helps to run 
+  unit-tests at the app-level itself. No need to install it into a project, 
+  just for test. Instead, you may just run ``python runtests.py``.
 
 0.1.5
 ======
