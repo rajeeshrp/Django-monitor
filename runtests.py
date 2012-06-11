@@ -67,6 +67,6 @@ def runtests(*test_args):
     sys.exit(failures)
 
 if __name__ == "__main__":
-    """Unit tests of the app, finance_schedule, are run."""
+    """Unit tests of the app, django_monitor, are run from here."""
     runtests('django_monitor')
 

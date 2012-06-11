@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'django-monitor',
-    version = "0.2rc",
+    version = "0.2",
     description = "Django app to moderate model objects",
     long_description = open("README.rst").read(),
     install_requires = [
